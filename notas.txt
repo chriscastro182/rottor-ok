@@ -1,0 +1,10 @@
+PHP 7.4.33
+node 16.20.0
+---------------------------------------------------------------
+Para que el cotizador elimine en automatico los antiguos registros y ponga los nuevos:
+1.- Anadir una nueva columna en version que diga si es visible o no 
+2.- Poner columna visible de todos en 0
+3.- Cada que se anade un nuevo registro poner en todos los registros el valor de 0 en la columna visible y alos nuevos poner el valor de 1
+4.- En el mostrar los registros solo poner los que el valor de visible sea igual a 1
+---------------------------------------------------------------
+SELECT DISTINCT brand.name, brand.id, brand.description FROM brand WHERE brand.id IN (SELECT market_launch.brand_id FROM brand RIGHT JOIN market_launch ON brand.id = market_launch.brand_id WHERE market_launch.created_at LIKE CONCAT((SELECT LEFT(MAX(market_launch.created_at), 14) FROM brand RIGHT JOIN market_launch ON brand.id = market_launch.brand_id), '%') AND market_launch.year = 2024);

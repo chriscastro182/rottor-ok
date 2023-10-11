@@ -1,0 +1,939 @@
+@font-face {
+	font-family: 'Montserrat Black';
+	src: url('fonts/Montserrat-Black.woff2') format('woff2'),
+	url('fonts/Montserrat-Black.woff') format('woff');
+	font-weight: 900;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Montserrat Bold';
+	src: url('fonts/Montserrat-Bold.woff2') format('woff2'),
+	url('fonts/Montserrat-Bold.woff') format('woff');
+	font-weight: bold;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Montserrat Light';
+	src: url('fonts/Montserrat-Light.woff2') format('woff2'),
+	url('fonts/Montserrat-Light.woff') format('woff');
+	font-weight: 300;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Montserrat';
+	src: url('fonts/Montserrat-Regular.woff2') format('woff2'),
+	url('fonts/Montserrat-Regular.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+body{
+	font-family: Arial, Helvetica, sans-serif;
+	color: #000;
+}
+body.public{
+	font-family: 'Montserrat';
+	font-style: italic;
+}
+.h1, .h2, .h3, .h4, .h5,
+h1, h2, h3, h4, h5{
+	font-family: 'Montserrat Bold';
+}
+span,
+.font-light{
+	font-family: 'Montserrat Light';
+}
+.text-gigant{
+	font-size: 5rem;
+}
+.bg-black{
+	background-color: #000;
+}
+
+/*
+ * MENU
+ */
+#header .navbar{
+	position: relative;
+}
+#header .navbar #boton-contacto{
+	position: absolute;
+	width: 100%;
+	max-width: 200px;
+	z-index: 1;
+}
+#boton-contacto-xs{
+	background-color: #FF0000;
+}
+
+/*
+ * PRESENTATION
+ */
+#presentation{
+	position: relative;
+}
+#presentation #boton-contacto{
+	position: absolute;
+	left: 45%;
+	top: 0;
+	width: 100%;
+	max-width: 300px;
+	z-index: 1;
+}
+#presentation #boton-contacto img{
+	z-index: 100;
+}
+#presentation #motociclista-1{
+	background-image: url('../img/body1/INDEX_2_02.jpg');
+	background-repeat: no-repeat;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+}
+/*
+#presentation #motociclista-1 .description{
+	background-image: url('../img/body1/PLECA.png');
+	background-repeat: no-repeat;
+	background-position: center;
+	position:absolute;
+	top: 22%;
+	left: -200px;
+	width: 100%;
+	max-width: 980px;
+	height: 80px;
+}
+*/
+.img-container .second-description{
+	position: absolute;
+	top: 40%;
+	left: 0;
+	width: 100%;
+	max-width: 980px;
+	height: auto;
+}
+.img-container .second-description .h2{
+	font-size: 2rem;
+}
+.description h3{
+	top: 35%;
+	font-size: 2rem;
+}
+#presentation .img-moto{
+	position: absolute;
+	top: 6%;
+	right: 13%;
+}
+.img-container .second-description #second-description-text strong{
+	font-size: 3.8rem;
+}
+
+#why{
+	background-image: url('../img/body2/INDEX_2_04.jpg');
+	background-repeat: no-repeat;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+}
+#why .figure figcaption{
+	background-image: url('../img/body2/FLECHA.png');
+	background-position: right center;
+	background-repeat: no-repeat;
+}
+
+#certification{
+	background-color: #e3e3e3;
+}
+#certification .certification-title{
+	width: 100%;
+	max-width: 750px;
+	font-size: 1.4rem;
+}
+
+#mision{
+	background-image: url('../img/body4/INDEX_2_07.jpg');
+	background-repeat: no-repeat;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+}
+
+#sale{
+	background-color: #ff0000;
+	color: #fff;
+}
+#sale .sale-title{
+	color: #fff;
+}
+#sale #sale-img{
+	z-index: 20;
+}
+
+#sale-forms{
+	background-color: #000;
+	color: #fff;
+}
+#form-circle{
+	width: 10px;
+	height: 10px;
+}
+#btn-pagination .btn{
+	height: 20px;
+	background-color: #f1f1f1;
+}
+#btn-pagination .btn.state-bg{
+	background-color: #F03009;
+}
+
+#steps{
+	background-image: url('../img/4A_SECCION.jpg');
+	background-position: center;
+	background-repeat: no-repeat;
+	color: #fff;
+}
+
+#sell-component .title-fragment{
+    background-color: #F03009 !important;
+}
+
+#product-page{
+	min-height: 700px;
+}
+#products-page .product-card a{
+	text-decoration: none;
+}
+/**
+BEGIN PRODUCT GALLERY
+ */
+.small-img {
+	width: 100%;
+	height: auto;
+	margin-top: 10px;
+	position: relative;
+	left: 25px;
+	min-height: 400px;
+}
+
+.small-img .icon-left, .small-img .icon-right {
+	width: 12px;
+	height: 24px;
+	cursor: pointer;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	margin: auto 0;
+	left: 45%;
+}
+
+.small-img .icon-left { transform: rotate(270deg); top: 0; bottom: 100%; }
+
+.small-img .icon-right { right: 0; transform: rotate(90deg); bottom: 0; top: 100%; }
+
+.small-img .icon-left:hover, .small-img .icon-right:hover { opacity: .5; }
+
+.small-container {
+	max-width: 500px;
+	width: 90%;
+	height: auto;
+	overflow: hidden;
+	position: absolute;
+	left: 0;
+	right: 0;
+	margin: 50px auto;
+}
+
+.small-container div {
+	width: 800%;
+	position: relative;
+}
+
+.small-container .show-small-img {
+	width: 100px;
+	height: auto;
+	margin-right: 6px;
+	cursor: pointer;
+	float: left;
+	clear: left;
+}
+.small-container .show-small-img:last-of-type { margin-right: 0; }
+/**
+END PRODUCT GALLERY
+ */
+
+/**
+BEGIN SELL INFO
+ */
+#sell-page{
+	background: url("/img/fondo_new.jpg") repeat-x center;
+}
+#sell-page .card{
+	background: transparent;
+}
+.clickable,
+.clickable-card,
+.clickable-li{
+	cursor: pointer !important;
+}
+.red-arrow{
+	font-size: 7rem;
+	color: #f03009;
+}
+.btn-background{
+	background-color: #f03009;
+	font-size: 2rem;
+}
+.btn-red{
+	background-color: #f03009;
+	border-color: #000;
+	font-size: 1.2rem;
+}
+.text-red{
+	color: #f03009;
+}
+.text-gray{
+	color: #6e707e;
+}
+.sell-title{
+	max-width: 550px;
+	width: 100%;
+	border: solid 3px #f03009;
+	border-radius: 15px;
+	-moz-border-radius: 15px;
+	-webkit-border-radius: 15px;
+}
+#sell-subtitle{
+	font-family: 'Montserrat Light', Arial, Helvetica, sans-serif !important;
+}
+.sell-list{
+	max-width: 550px;
+	width: 100%;
+}
+.sell-list-item .h5,
+.sell-list-item .h4{
+	font-family: 'Montserrat Light', Arial, Helvetica, sans-serif !important;
+}
+/**
+END SELL INFO
+ */
+
+#footer{
+	font-family: 'Montserrat Light', Arial, Helvetica, sans-serif !important;
+	background-color: #f03009;
+	min-height: 200px;
+}
+#footer a{
+	color: #ffffff;
+	text-decoration: none;
+}
+#footer a:hover,
+#footer a:focus{
+	text-decoration: underline;
+}
+#footer ul li{
+	font-size: 1.8rem;
+}
+#footer-pleca{
+	background-image: url('../img/5A_SECCION_PLECA.png');
+	background-repeat: no-repeat;
+	background-position: right bottom;
+	opacity: 0.8;
+}
+#footer-pleca-xs{
+	background-color: #000;
+	width: 100%;
+}
+#footer-pleca-xs .box{
+	font-size: 16px;
+}
+#footer-form{
+	background-color: rgba(255, 0, 0, 0.8);
+	font-style: italic;
+}
+#footer-form input,
+#footer-form textarea{
+	font-style: italic;
+}
+#logo-footer{
+	max-width: 300px;
+	width: 100%;
+}
+
+/* Smartphones (portrait and landscape) ----------- */
+@media screen and (min-width : 320px) and (max-width : 480px) {
+	#presentation #motociclista-1{
+		background-image: url('../img/body1/fondo_responsive_home.png');
+		background-size: auto;
+		overflow: hidden;
+		height: 400px;
+		min-height: 250px;
+		width: 100%;
+		background-position: 30% 40%;
+	}
+	#presentation #motociclista-1 #motociclista-description{
+		text-align: center;
+	}
+	#presentation #motociclista-1 #motociclista-description p{
+		color: #F03009;
+	}
+	#presentation #motociclista-1 .description{
+		/*background-image: url('../img/RESPONSIVE_4.png');*/
+		background-image: none;
+		background-repeat: repeat;
+		background-position: center;
+		position: static;
+	}
+	#presentation #motociclista-1 .second-description h3{
+		color: #000;
+	}
+	.img-container .description{
+		height: auto;
+	}
+	.img-container .description .h1{
+		font-size: calc(1.500rem + 1.5vw);
+	}
+	.img-container .second-description{
+		position: static;
+	}
+	.img-container .second-description .h2{
+		font-size: 1.8rem;
+	}
+	.img-container .second-description #second-description-text strong{
+		font-size: 2rem;
+	}
+	.description h3{
+		font-size: 20px;
+	}
+	#presentation .img-moto{
+		position: absolute;
+		top: auto;
+		bottom: 0;
+		right: 0;
+	}
+	#presentation .img-moto img{
+		width: 70%;
+	}
+	#sale #sale-title{
+		margin-right: 0;
+	}
+	#steps{
+		background-size: 100% 100%;
+	}
+	#footer{
+		background-size: cover;
+		font-size: 0.9rem;
+		text-align: center;
+	}
+	#footer-pleca{
+		height: auto;
+		width: 100%;
+	}
+	#footer-form{
+		position: static;
+		width: 100%;
+	}
+	#header .navbar #boton-contacto{
+		right: 22%;
+		top: auto;
+		bottom: 2%;
+	}
+	#why{
+		max-width: 100%;
+		height: auto;
+	}
+	#why #why-title{
+		font-size: 1.7rem;
+	}
+	#why .figure{
+		float: none;
+		width: 100%;
+		height: auto;
+	}
+	#certification .certification-container{
+		width: 100%;
+		height: auto;
+		min-height: 400px;
+	}
+	#certification .certification-container{
+		position: relative;
+	}
+	#certification .certification-container .figure{
+		position: static;
+		max-width: 100%;
+		width: 100%;
+		text-align: center;
+	}
+    #custom-form{
+        max-width: 100%;
+    }
+}
+@media only screen and (min-width : 480px) and (max-width : 768px){
+	#presentation #motociclista-1{
+		background-image: url('../img/body1/fondo_responsive_home.png');
+		background-size: contain;
+		overflow: hidden;
+		height: 550px;
+		width: 100%;
+	}
+	#presentation #motociclista-1 #motociclista-description{
+		text-align: center;
+	}
+	#presentation #motociclista-1 #motociclista-description p{
+		color: #F03009;
+	}
+	#presentation #motociclista-1 .description{
+		background-image: url('../img/RESPONSIVE_4.png');
+		background-repeat: repeat;
+		background-position: center;
+		position:absolute;
+	}
+	#presentation #motociclista-1 .second-description h3{
+		color: #000;
+	}
+	.img-container .second-description{
+		position: absolute;
+	}
+	.description h3{
+		position:absolute;
+	}
+	#header .navbar #boton-contacto{
+		right: 12%;
+		top: 25%;
+	}
+	#why{
+		max-width: 100%;
+		height: auto;
+	}
+	#why #why-title{
+		font-size: 2rem;
+	}
+	#why .figure{
+		float: left;
+		width: 400px;
+		height: auto;
+	}
+	#certification .certification-container{
+		width: 100%;
+		height: auto;
+		min-height: 400px;
+	}
+	#certification .certification-container{
+		position: relative;
+	}
+	#certification .certification-container .figure{
+		position: static;
+		max-width: 100%;
+	}
+	#footer{
+		font-size: 1.2rem;
+	}
+    #custom-form{
+        max-width: 100%;
+    }
+}
+/* iPads (portrait) ----------- */
+@media only screen and (min-width : 768px) and (max-width : 1024px) and (orientation : portrait) {
+	/* Styles */
+	#presentation #motociclista-1{
+		background-image: url('../img/body1/fondo_responsive_home.png');
+		background-size: 100% 100%;
+		overflow: hidden;
+		height: 450px;
+		width: 100%;
+	}
+	#presentation #motociclista-1 #motociclista-description{
+		text-align: center;
+	}
+	#presentation #motociclista-1 #motociclista-description p{
+		color: #F03009;
+	}
+	#presentation #motociclista-1 .description{
+		background-image: url('../img/RESPONSIVE_4.png');
+		background-repeat: repeat;
+		background-position: center;
+		position:absolute;
+		left: 0;
+		top: 10%;
+	}
+	#presentation #motociclista-1 .second-description h3{
+		color: #000;
+	}
+	.img-container .second-description{
+		position: absolute;
+		left: -100px;
+	}
+	#presentation .img-moto{
+		top: 20%;
+		right: -270px;
+	}
+	#presentation .img-moto img{
+		max-width: 80%;
+	}
+	.description h3{
+		position:absolute;
+	}
+	#header .navbar #boton-contacto{
+		right: 4%;
+		top: 35%;
+	}
+	#why{
+		max-width: 100%;
+		height: auto;
+	}
+	#why #why-title{
+		font-size: 2.5rem;
+	}
+	#why .figure{
+		float: left;
+		width: 45%;
+		height: auto;
+	}
+	#certification .certification-container{
+		width: 100%;
+		height: auto;
+		min-height: 400px;
+	}
+	#certification .certification-container{
+		position: relative;
+	}
+	#certification .certification-container .figure{
+		position: static;
+		width: 100%;
+		max-width: 45%;
+		text-align: center;
+	}
+	#certification .certification-container .figure figcaption{
+		font-size: 0.9rem;
+	}
+	#certification .certification-container .figure#certificate-img{
+		position: static;
+		width: 100%;
+		max-width: 100%;
+		text-align: center;
+	}
+	#certification .certification-container .figure#mechanic,
+	#certification .certification-container .figure#legal,
+	#certification .certification-container .figure#shop{
+		max-width: 31%;
+		height: auto;
+		min-height: 250px;
+	}
+	#footer{
+		font-size: 1.2rem;
+	}
+    #custom-form{
+        max-width: 100%;
+        margin: 0 auto;
+    }
+}
+/* iPads (landscape) ----------- */
+@media only screen and (min-width : 768px) and (max-width : 1200px) and (orientation : landscape) {
+	#presentation #motociclista-1{
+		background-image: url('../img/body1/INDEX_2_02.jpg');
+		height: 413px;
+		width: 100%;
+	}
+	#presentation #motociclista-1 #motociclista-description{
+		text-align: end;
+	}
+	#presentation #motociclista-1 #motociclista-description p{
+		color: #FFF;
+	}
+	#presentation #motociclista-1 .description{
+		background-image: url('../img/RESPONSIVE_4.png');
+		background-repeat: no-repeat;
+		background-position: center;
+		position:absolute;
+	}
+	#presentation #motociclista-1 .second-description h3{
+		color: #fff;
+	}
+	.img-container .second-description{
+		position: absolute;
+	}
+	.description h3{
+		position:absolute;
+	}
+	#presentation .img-moto{
+		top: 20%;
+		right: -250px;
+	}
+	#presentation .img-moto img{
+		max-width: 80%;
+	}
+	#why{
+		max-width: 100%;
+		height: 500px;
+	}
+	#header .navbar #boton-contacto{
+		right: 15%;
+		top: 25%;
+	}
+	#why{
+		max-width: 100%;
+		height: auto;
+	}
+	#why #why-title{
+		font-size: 3rem;
+	}
+	#why .figure{
+		float: left;
+		width: 250px;
+		height: auto;
+	}
+	#certification .certification-container{
+		width: 100%;
+		height: auto;
+		min-height: 400px;
+	}
+	#certification .certification-container{
+		position: relative;
+	}
+	#certification .certification-container .figure{
+		position: absolute;
+		width: 100%;
+		max-width: 33.33%;
+		text-align: center;
+	}
+	#certification .certification-container .figure#certificate-img{
+		position: absolute;
+		max-width: 100%;
+		text-align: center;
+	}
+	#footer{
+		font-size: 1.2rem;
+	}
+    #custom-form{
+        max-width: 50%;
+        margin: 0 auto;
+    }
+}
+/* Desktops and laptops ----------- */
+@media only screen and (min-width : 1024px) and (max-width: 1300px) {
+	#presentation #motociclista-1{
+		background-image: url('../img/body1/INDEX_2_02.jpg');
+		background-size: 100% 413px;
+		overflow: hidden;
+		height: 413px;
+		width: 100%;
+	}
+	#presentation #motociclista-1 #motociclista-description{
+		text-align: end;
+	}
+	#presentation #motociclista-1 #motociclista-description p{
+		color: #FFF;
+	}
+	#presentation #motociclista-1 .description{
+		background-image: url('../img/body1/PLECA.png');
+		background-repeat: no-repeat;
+		background-position: center;
+		position:absolute;
+		top: 22%;
+		left: -250px;
+		width: 100%;
+		max-width: 980px;
+		height: 80px;
+	}
+	#presentation #motociclista-1 .second-description h3{
+		color: #fff;
+	}
+	.img-container .second-description{
+		position: absolute;
+	}
+	.description h3{
+		position:absolute;
+	}
+	#why{
+		max-width: 100%;
+		height: auto;
+	}
+	#sale #sale-title{
+		margin-right: -87px;
+	}
+	#steps{
+		background-size: cover;
+	}
+	#footer{
+		background-size: cover;
+	}
+	#footer-pleca{
+		height: 700px;
+		width: 100%;
+	}
+	#footer-form{
+		position: absolute;
+		top: 10%;
+		left: 10%;
+		width: 25%;
+	}
+	#header .navbar #boton-contacto{
+		right: 15%;
+		top: 35%;
+	}
+	#why #why-title{
+		font-size: 3rem;
+	}
+	#why .figure{
+		float: left;
+		width: 30%;
+		height: auto;
+		min-height: 300px;
+	}
+	#certification .certification-container{
+		width: 100%;
+		height: auto;
+		min-height: 400px;
+	}
+	#certification .certification-container{
+		position: relative;
+	}
+	#certification .certification-container .figure{
+		max-width: 31%;
+		text-align: center;
+		position: static;
+	}
+	#certification .certification-container .figure#certificate-img{
+		width: 100%;
+		max-width: 100%;
+		text-align: center;
+		position: static;
+	}
+	#certificate-img{
+		top: 3%;
+		left: 5%;
+	}
+	#mechanic{
+		top: 3%;
+		left: 35%;
+	}
+	#legal{
+		top: 3%;
+		left: 55%;
+	}
+	#shop{
+		top: 3%;
+		left: 85%;
+	}
+	#footer{
+		font-size: 1.2rem;
+	}
+    #custom-form{
+        max-width: 50%;
+        margin: 0 auto;
+    }
+}
+/* Big Desktops ----------- */
+@media only screen and (min-width : 1300px){
+	#presentation #motociclista-1{
+		background-image: url('../img/body1/INDEX_2_02.jpg');
+		background-size: 100% 413px;
+		overflow: hidden;
+		height: 413px;
+		width: 100%;
+	}
+	#presentation #motociclista-1 #motociclista-description{
+		text-align: end;
+	}
+	#presentation #motociclista-1 #motociclista-description p{
+		color: #FFF;
+	}
+	#presentation #motociclista-1 .description{
+		background-image: url('../img/body1/PLECA.png');
+		background-repeat: no-repeat;
+		background-position: center;
+		position:absolute;
+		top: 22%;
+		left: -200px;
+		width: 100%;
+		max-width: 980px;
+		height: 80px;
+	}
+	#presentation #motociclista-1 .second-description h3{
+		color: #fff;
+	}
+	.img-container .second-description{
+		position: absolute;
+	}
+	.description h3{
+		position:absolute;
+	}
+	#why{
+		max-width: 100%;
+		height: 500px;
+	}
+	#sale #sale-title{
+		margin-right: -87px;
+	}
+	#steps{
+		background-size: cover;
+	}
+	#footer{
+		background-size: cover;
+	}
+	#footer-pleca{
+		height: 700px;
+		width: 100%;
+	}
+	#footer-form{
+		position: absolute;
+		top: 10%;
+		left: 10%;
+		width: 25%;
+	}
+	#header .navbar #boton-contacto{
+		right: 20%;
+		top: 35%;
+	}
+	#why #why-title{
+		font-size: 3rem;
+	}
+	#why .figure{
+		float: left;
+		width: 250px;
+		height: auto;
+	}
+	#certification .certification-container{
+		background-image: url('../img/body3/ELEMENTO.png');
+		background-repeat: no-repeat;
+		background-size: 1056px 197px;
+		background-position: right 10px;
+		width: 100%;
+		height: auto;
+		min-height: 400px;
+	}
+	#certification .certification-container{
+		position: relative;
+	}
+	#certification .certification-container .figure{
+		position: absolute;
+		width: 100%;
+		max-width: 200px;
+	}
+	#certificate-img{
+		top: -40px;
+		left: 5%;
+	}
+	#mechanic{
+		top: 3%;
+		left: 41%;
+	}
+	#legal{
+		top: 3%;
+		left: 63%;
+	}
+	#shop{
+		top: 3%;
+		left: 90%;
+	}
+	#footer{
+		font-size: 0.9rem;
+	}
+    #custom-form{
+        max-width: 50%;
+        margin: 0 auto;
+    }
+}
