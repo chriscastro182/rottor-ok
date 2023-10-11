@@ -21,6 +21,8 @@ class CreateProductTable extends Migration
             $table->text('description')->nullable();
             $table->decimal('price', 10, 2);
             $table->year('year');
+            $table->boolean('sold');
+			$table->integer('priority');
             $table->timestamps();
 			$table->foreign('brand_id')->references('id')->on('brand')->onDelete('no action')->onUpdate('cascade');
 			$table->foreign('model_id')->references('id')->on('model')->onDelete('no action')->onUpdate('cascade');

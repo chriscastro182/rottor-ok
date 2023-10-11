@@ -161,10 +161,15 @@ class MarketLaunchService implements IBaseService, IMarketLaunchService
 			$marketResult['year'] = $market->year;
 			$marketResult['cc'] = $market->cc;
             if ($factor){
-                $marketResult['is_cashiable'] = $market->is_cashiable + ($market->is_cashiable*$factor->percentage);
-                $marketResult['full_payment'] = $market->full_payment + ($market->full_payment*$factor->percentage);
-                $marketResult['exchange_payment'] = $market->exchange_payment + ($market->exchange_payment*$factor->percentage);
-                $marketResult['allocation_payment'] = $market->allocation_payment + ($market->allocation_payment*$factor->percentage);
+                $marketResult['is_cashiable'] = $market->is_cashiable;
+				if($marketResult['is_cashiable']){
+					$marketResult['full_payment'] = $market->full_payment - ($market->full_payment*$factor->percentage);
+					$marketResult['exchange_payment'] = $market->exchange_payment - ($market->exchange_payment*$factor->percentage);
+				}else{
+					$marketResult['full_payment'] = 0;
+					$marketResult['exchange_payment'] = 0;
+				}				
+                $marketResult['allocation_payment'] = $market->allocation_payment - ($market->allocation_payment*$factor->percentage);
             }else{
                 $marketResult['is_cashiable'] = $market->is_cashiable;
                 $marketResult['full_payment'] = $market->full_payment;

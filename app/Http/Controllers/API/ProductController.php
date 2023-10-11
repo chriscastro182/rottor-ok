@@ -91,4 +91,17 @@ class ProductController extends Controller
 
         return response()->json($this->productService->filter($request->all(), 10));
     }
+
+    /**
+     * Search.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     */
+    public function searchByWord(Request $request)
+    {
+        Log::info("Búsqueda tiempo real");
+        Log::info($request->all());        
+
+        return response()->json($this->productService->search($request->all(), 10));
+    }
 }

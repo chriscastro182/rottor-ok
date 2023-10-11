@@ -140,6 +140,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
+
         $productData = $request->except('files');
         $attachs = array();
         $storedAttachs = array();
@@ -158,6 +159,10 @@ class ProductController extends Controller
                     break;
             }
         }
+        if ($productData["sold"]==0) {
+            $productData["sold"] = null;            
+        }
+        //dd($productData);
         Log::info("Se guardaron estos archivos");
         Log::info($storedAttachs);
 
@@ -192,5 +197,26 @@ class ProductController extends Controller
         $product = $this->productService->get($id);
 
         return response()->json(array('status' => true, 'images' => $product->attachments()->get()));
+    }
+    /**
+     * Set as Sold the specified resource in storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function setSold(Request $request, $id)
+    {
+
+        Log::info("Moto vendida");
+        Log::info($id);
+
+        if ($product = $this->productService->sold($id)) {
+            Log::info('Se actualizó el estatus de venta del producto');
+            Log::info($product->id);
+
+            return redirect()->route('products.index')->with(['message' => __('message.success_update')]);
+        }
+
+        return back()->withErrors(['message' => __('message.fail_update')]);
     }
 }

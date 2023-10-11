@@ -24,6 +24,30 @@
             <p class="card-text">{{ __('product.km') }}: {{ $product->km }}</p>
             <p class="card-text">{{ __('product.owners') }}: {{ $product->owners }}</p>
             <p class="card-text">{{ __('product.bill_type') }}: {{ $product->bill_type }}</p>
+            <p class="card-text">{{ __('product.priority') }}: {{ $product->priority }}</p>
+            <p class="card-text">{{ __('product.color') }}: {{ $product->color }}</p>
+            @if ($product->sold)
+                <p class="card-text">Estado: 
+                    <span>
+                        {!! __('labels.sold') !!} 
+                    </span>
+                    Vendida
+                </p>                  
+            @endif
+
+            @if ($product->apartada)
+            <p class="card-text">
+                <span>
+                    {!! __('labels.sold') !!} 
+                </span>
+                Apartada
+            </p>    
+            @endif 
+
+            @if (!$product->apartada && !$product->sold)
+                <p class="card-text">Estado: En venta</p>                
+            @endif
+            
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">
                     <img src="{{ asset('storage/'.$product->attachments()->first()->url) }}" alt="{{ $product->attachments()->first()->name }}" class="img-fluid">

@@ -21,7 +21,7 @@ class SecondSheetAlgorithmImport implements ToCollection
 			Log::info("Informacion de la fila");
 			Log::info($row);
 
-			if ($cont>=7 && $cont<=14) {
+			if ($cont>=2 && $cont<=7) {
 				Log::info("Guardamos data");
 				$km = Km::firstOrCreate([
 					'min_km' => $row[0],
@@ -44,7 +44,7 @@ class SecondSheetAlgorithmImport implements ToCollection
 
 			}
 
-			if ($cont>=20 && $cont<=27) {
+			if ($cont>=8 && $cont<=13) {
 				Log::info("Guardamos data");
 				$km = Km::firstOrCreate([
 					'min_km' => $row[0],
@@ -65,7 +65,7 @@ class SecondSheetAlgorithmImport implements ToCollection
 				$this->insertFactor($km, $motor, 2015, $row[8]);
 			}
 
-			if ($cont>=33 && $cont<=39) {
+			if ($cont>=14 && $cont<=19) {
 				Log::info("Guardamos data");
 				$km = Km::firstOrCreate([
 					'min_km' => $row[0],
@@ -86,7 +86,7 @@ class SecondSheetAlgorithmImport implements ToCollection
 				$this->insertFactor($km, $motor, 2015, $row[8]);
 			}
 
-			if ($cont>=45 && $cont<=53) {
+			if ($cont>=20 && $cont<=25) {
 				Log::info("Guardamos data");
 				$km = Km::firstOrCreate([
 					'min_km' => $row[0],
@@ -107,7 +107,7 @@ class SecondSheetAlgorithmImport implements ToCollection
 				$this->insertFactor($km, $motor, 2015, $row[8]);
 			}
 
-			if ($cont>=59 && $cont<=66) {
+			if ($cont>=26 && $cont<=31) {
 				Log::info("Guardamos data");
 				$km = Km::firstOrCreate([
 					'min_km' => $row[0],

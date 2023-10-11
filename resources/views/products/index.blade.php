@@ -36,6 +36,7 @@
 					<th>{{ __('product.description') }}</th>
 					<th>{{ __('product.price') }}</th>
 					<th>{{ __('product.year') }}</th>
+					<th>{{ __('product.sold') }}</th>
 					<th>{{ __('labels.actions') }}</th>
 				</tr>
 			</thead>
@@ -44,15 +45,22 @@
 				<tr>
 					<td>
 					@if($product->attachments->count() > 0)
-						<img class="img-fluid" src="{{ asset('storage/'.$product->attachments->first()->url) }}" alt="">
+						<img class="img-fluid" style="width: 400px" src="{{ asset('storage/'.$product->attachments->first()->url) }}" alt="">
 					@endif
 					</td>
 					<td>{{ $product->brand->name }}</td>
 					<td>{{ $product->model->description }}</td>
 					<td>{{ $product->name }}</td>
 					<td>{{ $product->description }}</td>
-					<td>{{ $product->price }}</td>
+					<td>${{ number_format($product->price, 2, ',', '.')  }}</td>
 					<td>{{ $product->year }}</td>
+					<td>
+						@if ($product->sold)
+						<span>
+							{!! __('labels.sold') !!}
+						</span>
+						@endif
+					</td>
 					<td>
                         <a href="{{ route('products.show', [$product->id]) }}" class="btn btn-info">{!!  __('labels.show') !!}</a>
                         <a href="{{ route('products.edit', [$product->id]) }}" class="btn btn-warning">{!! __('labels.edit') !!}</a>

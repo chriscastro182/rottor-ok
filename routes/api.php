@@ -28,6 +28,7 @@ Route::apiResource('/brand/{year}/', 'API\BrandController');
 Route::apiResource('version', 'API\VersionController');
 
 Route::post('product/filter', 'API\ProductController@filter');
+Route::post('product/searchByWord', 'API\ProductController@searchByWord');
 Route::apiResource('product', 'API\ProductController');
 
 Route::get('/model/{id}/version/{year}', 'API\ModelController@versions');//esto es para obtener las versiones de un modelo

@@ -31,6 +31,7 @@ Route::get('/privacy', 'HomeController@privacy')->name('privacy');
 Route::prefix('admin')->group(function(){
     //Route::get('products/{id}/images', 'ProductController@getImages');
 	Route::resource('products', 'ProductController');
+    Route::post('products/{id}', 'ProductController@setSold')->name('products.setSold');
 
     Route::get('models/{id}/versions/allForm', 'ModelController@getVersions');
 	Route::resource('models', 'ModelController');

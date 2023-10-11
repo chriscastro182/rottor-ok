@@ -22,7 +22,7 @@ class FirstSheetAlgorithmImport implements ToCollection
 			if ($saltar) {
 				$saltar = false;
 				continue;
-			}
+			} 
 			$marketToMatch = array();
             $marketData = array();
 			if (!empty($row[0]) && $row[0] && $row[0] != 'MARCA' && $row[1] && $row[4] && $row[7]) {

@@ -44,4 +44,5 @@ return [
     'delete' => '<i class="fas fa-trash"></i>',
     'search' => '<i class="fas fa-search"></i>',
     'excel' => '<i class="far fa-file-excel"></i>',
+    'sold' => '<i class="fa fa-usd"></i>',
 ];

@@ -95,7 +95,39 @@
                             <div class="form-group">
                                 <input id="files" class="form-control" type="file" name="files[]" multiple>
                             </div>
+                            <div class="form-group">
+                                <label for="sold">¿Producto vendido?</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="sold" id="sold_si" value="1" {{ $product->sold == 1 ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="sold_si">Sí</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="sold" id="sold_no" value="0" {{ $product->sold == 0 ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="sold_no">No</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="apartada">¿Moto apartada?</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="apartada" id="apartada_si" value="1" {{ $product->apartada == 1 ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="apartada_si">Sí</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="apartada" id="apartada_no" value="0" {{ $product->apartada == 0 ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="apartada_no">No</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="priority">{{ __('product.priority') }}</label>
+                                <input id="priority" class="form-control" type="text" name="priority" value="{{ $product->priority }}">
+                                <label for="sold">Escribe del 1 al 1000 la prioridad de aparición, donde 1 es la prioridad más alta y 1000 la más baja</label>
+                            </div>
+                            <div class="form-group">
+                                <label for="color">{{ __('product.color') }}</label>
+                                <input id="color" class="form-control" type="text" name="color" value="{{ $product->color }}">
+                            </div>
                         </div>
+
                     </div><!-- .card -->
                 </div>
             </div>

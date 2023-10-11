@@ -48,6 +48,50 @@
                             </ul>
                         </div>
                     </li>
+                    <li class="list-group-item">
+                        <a class="btn btn-light" data-bs-toggle="collapse" href="#collapseYears" role="button" aria-expanded="false" aria-controls="collapseYears">Años</a>
+                        <div class="collapse" id="collapseYears">
+                            <ul class="list-unstyled">
+                                <li v-for="year in years" class="list-filter-item">
+                                    <a class="btn btn-link text-decoration-none text-dark" @click="filterPostsByYear(year)">
+                                        {{ year }}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <a class="btn btn-light" data-bs-toggle="collapse" href="#collapseKms" role="button" aria-expanded="false" aria-controls="collapseKms">Kilómetros</a>
+                        <div class="collapse" id="collapseKms">
+                            <label for="">Rango</label>
+                            <ul class="list-unstyled">
+                                <li v-for="index in 5" class="list-filter-item">
+                                    <a class="btn btn-link text-decoration-none text-dark" @click="setKmFilterIndex(index)">
+                                        {{ minKmRanges[index] }} - {{ maxKmRanges[index] }}
+                                    </a>
+                                </li>
+                            </ul>
+                            <button class="btn btn-primary" @click="filterPostsByKM()">
+                                Filtrar
+                            </button>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <a class="btn btn-light" data-bs-toggle="collapse" href="#collapsePrice" role="button" aria-expanded="false" aria-controls="collapsePrice">Precios</a>
+                        <div class="collapse" id="collapsePrice">
+                            <label for="">Rango</label>
+                            <ul class="list-unstyled">
+                                <li v-for="index in 5" class="list-filter-item">
+                                    <a class="btn btn-link text-decoration-none text-dark" @click="setPriceFilterIndex(index)">
+                                        ${{ new Intl.NumberFormat().format(minPriceRanges[index]) }} a ${{ new Intl.NumberFormat().format( maxPriceRanges[index]) }}
+                                    </a>
+                                </li>
+                            </ul>
+                            <button class="btn btn-primary" @click="filterPostsByPrice()">
+                                Filtrar
+                            </button>
+                        </div>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -58,6 +102,8 @@
                 </div>
             </div>
             <div class="row">
+                <input class="form-control" type="text" id="búsqueda" v-model="filters.keyWord" placeholder="Búsqueda" @keyup="searchPosts(filters.keyWord)" >
+                <hr>
                 <div class="col-12 col-sm-6 col-md-4" v-for="product in products">
                     <div class="card mb-2 product-card">
                         <a :href="productLink(product.id)">
@@ -93,11 +139,25 @@ export default {
             brands: [],
             versions: [],
             models: [],
+            years: [],
+            minKmRanges: [0, 5001, 10001, 15001, 20001, 25001],
+            maxKmRanges: [5000, 10000, 15000, 20000, 25000, 30000],
+            minPriceRanges: [0, 50001, 100001, 150001, 200001, 250001],
+            maxPriceRanges: [50000, 100000, 150000, 200000, 250000, 500000],
             selectedFiltersName: [],
+            filterPriceIndex: 0,
+            filterKmIndex: 0,
             filters: [
                 {'brand_id': 0,
                 'version_id': 0,
-                'model_id': 0},
+                'model_id': 0,
+                'year': 0,
+                'keyWord': '',
+                'minKmRange': 0,
+                'maxKmRange': 0,
+                'minPriceRange': 0,
+                'maxPriceRange': 0,
+            },
             ]
         }
     },
@@ -106,6 +166,7 @@ export default {
         this.getBrands();
         this.getVersions();
         this.getModels();
+        this.getYears();
     },
     computed: {
     },
@@ -141,6 +202,31 @@ export default {
                     this.models = response.data;
                 });
         },
+        getYears: function (){
+            for (var i = 2015; i <= (new Date().getFullYear()); i++) {
+                this.years.push(i);
+            }
+
+            // console.log(this.years);
+        },
+        setKmFilterIndex: function(index){
+            this.filterKmIndex = index;
+            console.log(this.minKmRanges[this.filterKmIndex??0]);
+        },
+        setPriceFilterIndex: function(index){
+            this.filterPriceIndex = index;
+            console.log(this.minPriceRanges[this.filterPriceIndex??0]);
+        },
+        filterPostsByKM: function (){
+            this.filters[0].minKmRange = this.minKmRanges[this.filterKmIndex??0];
+            this.filters[0].maxKmRange = this.maxKmRanges[this.filterKmIndex??0];
+            this.sendingFilterRequest();
+        },
+        filterPostsByPrice: function (){
+            this.filters[0].minPriceRange = this.minPriceRanges[this.filterPriceIndex??0];
+            this.filters[0].maxPriceRange = this.maxPriceRanges[this.filterPriceIndex??0];            
+            this.sendingFilterRequest();
+        },
         filterPostsByBrand: function (brand){
             this.filters[0]['brand_id'] = brand.id;
             this.selectedFiltersName.push(brand);
@@ -158,6 +244,24 @@ export default {
             console.info("Haciendo el filtro con model_id: "+model.id);
             this.selectedFiltersName.push(model);
             this.sendingFilterRequest();
+        },   
+        filterPostsByYear: function (year){
+            this.filters[0]['year'] = year;
+            console.info("Haciendo el filtro con year: "+year);
+            this.selectedFiltersName.push(year);
+            this.sendingFilterRequest();
+        },      
+        searchPosts: function (keyWord){
+            this.filters[0]['keyWord'] = keyWord;
+            //console.info("Haciendo búsqueda con: "+keyWord);
+            //this.selectedFiltersName.push(model);
+            if (!keyWord) {
+                //console.log("sin Keyword", keyWord)
+                this.getProducts();
+            } else {
+                //console.log("Keyword para búsqueda: ", keyWord)
+                this.sendSearchRequest();                
+            }
         },
         sendingFilterRequest: function(){
             axios({
@@ -171,6 +275,27 @@ export default {
                 this.products = [];
                 this.products = response.data;
             });
+        },
+        sendSearchRequest: function(){
+            //console.log(this.filters);
+            axios({
+                url: 'api/product/searchByWord',
+                method: 'POST',
+                data: {
+                    filters: this.filters
+                }
+            }).then( (response) => {
+                this.products = [];
+                console.info(response.data);
+                // elimina vendidos
+                response.data.forEach(element => {
+                    if (element.sold) {
+                        response.data.pop();
+                    }
+                });
+
+                this.products = response.data;
+            }).catch( err => console.error(err));
         },
         removingFilter: function(type, filter){
             console.info("Tipo de filtro a borrar: "+type);

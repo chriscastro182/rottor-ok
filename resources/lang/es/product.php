@@ -19,6 +19,8 @@ return [
     'singular' => 'Producto',
     'plural' => 'Productos',
     'sell' => 'Agendar cita',
+    'sold' => 'Vendida',
+    'priority' => 'Prioridad',
     'number' => 'Producto #:id',
 
 	// Fields
@@ -37,6 +39,8 @@ return [
     'tank_capacity' => 'Capacidad de tanque',
     'performance' => 'Rendimiento',
     'extras' => 'Extras',
+    'color' => 'Color',
+    'apartada' => 'Apartada',
 
 	// Actions
 	'submit' => 'Registrar producto',

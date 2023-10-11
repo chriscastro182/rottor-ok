@@ -13,7 +13,7 @@ class Product extends Model
 
 	protected $table = 'product';
 
-	protected $fillable = ['brand_id', 'model_id', 'version_id', 'name', 'description', 'price', 'year', 'owners', 'km', 'bill_type', 'tank_capacity', 'performance', 'gas_cap', 'extras'];
+	protected $fillable = ['brand_id', 'model_id', 'version_id', 'name', 'description', 'price', 'year', 'owners', 'km', 'bill_type', 'sold', 'priority', 'tank_capacity', 'performance', 'gas_cap', 'extras','apartada', 'color'];
 
 	/**
 	 * Function for the relation of the Brand

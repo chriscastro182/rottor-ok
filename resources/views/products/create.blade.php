@@ -6,6 +6,7 @@
 	<div id="app">
 		<h1 class="h3 mb-2 text-gray-800"><i class="fas fa-motorcycle"></i> {{ __('product.new') }}</h1>
 		<form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
+			<input type="hidden" name="sold" value="{{false}}">
 			<div class="row">
 				<div class="col-12 col-sm-6">
 					<div class="card shadow mb-4">
@@ -54,6 +55,14 @@
 							<div class="form-group">
 								<label for="extras">{{ __('product.extras') }}</label>
 								<textarea name="extras" id="extras" class="form-control"></textarea>
+							</div>
+							<div class="form-group">
+								<label for="priority">{{ __('product.priority') }}</label>
+								<input id="priority" class="form-control" type="text" name="priority">
+							</div>
+							<div class="form-group">
+								<label for="color">{{ __('product.color') }}</label>
+								<input id="color" class="form-control" type="text" name="color">
 							</div>
 							<input class="btn btn-primary" type="submit" value="{{ __('product.submit') }}">
 						</div>

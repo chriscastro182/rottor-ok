@@ -146,8 +146,10 @@
                                     </thead>
                                     <tbody v-if="cotization.length > 0">
                                     <tr v-for="coti in cotization">
-                                        <td>${{ new Intl.NumberFormat().format(coti.full_payment) }}</td>
-                                        <td>${{ new Intl.NumberFormat().format(coti.exchange_payment) }}</td>
+                                        <td v-if="coti.full_payment > 0">${{ new Intl.NumberFormat().format(coti.full_payment) }}</td>
+										<td v-if="coti.full_payment == 0"> N/A</td>
+                                        <td v-if="coti.exchange_payment > 0">${{ new Intl.NumberFormat().format(coti.exchange_payment) }}</td>
+										<td v-if="coti.exchange_payment == 0"> N/A</td>
                                         <td>${{ new Intl.NumberFormat().format(coti.allocation_payment) }}</td>
                                     </tr>
                                     <tr>
@@ -346,10 +348,11 @@ export default{
         }
     },
     created(){
-        for (var i = 2015; i < (new Date().getFullYear()); i++) {
+        for (var i = 2015; i <= (new Date().getFullYear()); i++) {
             this.years.push(i);
         }
         this.title[0] = 'Vende tu moto';
+        console.log(this.years)
     },
     computed: {
         fechaMinima() {
