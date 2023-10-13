@@ -24,6 +24,8 @@ Route::post('customers/login', 'API\CustomerController@login');
 Route::apiResource('customers', 'API\CustomerController');
 
 Route::apiResource('/brand/{year}/', 'API\BrandController');
+Route::get('brand', 'API\BrandController@getAllBrands');
+
 
 Route::apiResource('version', 'API\VersionController');
 
@@ -33,6 +35,7 @@ Route::apiResource('product', 'API\ProductController');
 
 Route::get('/model/{id}/version/{year}', 'API\ModelController@versions');//esto es para obtener las versiones de un modelo
 Route::get('/model/year/{year}/brand/{id}', 'API\ModelController@getByBrand');
+Route::get('/model/onSale', 'API\ModelController@getAllOnSale');
 Route::apiResource('model', 'API\ModelController');
 
 Route::get('/market/lessBrands', 'API\MarketLaunchController@getLessBrands');

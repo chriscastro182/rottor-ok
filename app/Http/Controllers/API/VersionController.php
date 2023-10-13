@@ -22,7 +22,7 @@ class VersionController extends Controller
      */
     public function index()
     {
-        return response()->json($this->versionService->all());
+        return response()->json($this->versionService->allOnSale());
     }
 
     /**

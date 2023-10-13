@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Services\BrandService\IBrandService;
+use App\Services\ProductService\IProductService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -79,5 +80,10 @@ class BrandController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function getAllBrands(){
+
+        return response()->json($this->brandService->allonSale());
     }
 }

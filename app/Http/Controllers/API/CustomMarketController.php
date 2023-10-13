@@ -95,7 +95,7 @@ class CustomMarketController extends Controller
         $subject = "Cotización de moto";
         if ($customer){
             if ($customMarket = $customer->customMarkets()->create($customData)){
-                Mail::to('joserdz052@gmail.com')->send(new CorreoDeCotizacion($subject,$mensaje));//'Asunto del correo', 'Nombre del destinatario', 'Mensaje personalizado'
+                Mail::to('deck_chris_182@hotmail.com')->send(new CorreoDeCotizacion($subject,$mensaje));//'Asunto del correo', 'Nombre del destinatario', 'Mensaje personalizado'
                 return response()->json(array('state' => true, 'message' => "Se registraron los datos correctamente. En breve te mandaran cotización", 'custom' => $customMarket, 'customer' => $customer));
             }else{
                 return response()->json(array('state' => false, 'message' => "No se pudo registrar la info de la moto"));

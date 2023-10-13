@@ -91,4 +91,8 @@ class ModelController extends Controller
         Log::info($sql);
         return $model->version()->where('year', $year)->get();
     }
+
+    public function getAllOnSale(){
+        return response()->json($this->modelService->allOnSale());
+    }
 }

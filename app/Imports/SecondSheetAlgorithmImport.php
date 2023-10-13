@@ -7,128 +7,43 @@ use App\Models\Km;
 use App\Models\Motor;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Illuminate\Support\Facades\Log;
 
-class SecondSheetAlgorithmImport implements ToCollection
+class SecondSheetAlgorithmImport implements ToCollection, WithHeadingRow
 {
     /**
     * @param Collection $collection
     */
     public function collection(Collection $rows)
     {
-		$cont = 1;
 		foreach($rows as $row){
 			Log::info("Informacion de la fila");
 			Log::info($row);
+			//dd($row);
+			$km = Km::firstOrCreate([
+				'min_km' => $row['km_minimo'],
+				'max_km' => $row['km_maximo']
+			]);
 
-			if ($cont>=2 && $cont<=7) {
-				Log::info("Guardamos data");
-				$km = Km::firstOrCreate([
-					'min_km' => $row[0],
-					'max_km' => $row[1]
-				]);
+			$motor = Motor::firstOrCreate([
+				'min_cc' => $row['motor_minimo'],
+				'max_cc' => $row['motor_maximo']
+			]);
 
-				$motor = Motor::firstOrCreate([
-					'min_cc' => 0,
-					'max_cc' => 299
-				]);
+			$objFactor = Factor::where('km_id', $km->id)
+						->where('motor_id', $motor->id)
+						->where('year', $row['ano'])->first();
 
-				$this->insertFactor($km, $motor, 2021, $row[2]);
-				$this->insertFactor($km, $motor, 2020, $row[3]);
-				$this->insertFactor($km, $motor, 2019, $row[4]);
-				$this->insertFactor($km, $motor, 2018, $row[5]);
-				$this->insertFactor($km, $motor, 2017, $row[6]);
-				$this->insertFactor($km, $motor, 2016, $row[7]);
-				$this->insertFactor($km, $motor, 2015, $row[8]);
-
-
+			if (!$objFactor) {
+				$this->insertFactor($km, $motor, $row['ano'], $row['porcentaje']);
+			} else {
+				$objFactor['percentage'] = $row['porcentaje'];				
+				if($objFactor->update())
+					Log::info("Se actualizó la información del factor");
+				else
+					Log::info("No se pudo actualizar el factor");
 			}
-
-			if ($cont>=8 && $cont<=13) {
-				Log::info("Guardamos data");
-				$km = Km::firstOrCreate([
-					'min_km' => $row[0],
-					'max_km' => $row[1]
-				]);
-
-				$motor = Motor::firstOrCreate([
-					'min_cc' => 300,
-					'max_cc' => 499
-				]);
-
-				$this->insertFactor($km, $motor, 2021, $row[2]);
-				$this->insertFactor($km, $motor, 2020, $row[3]);
-				$this->insertFactor($km, $motor, 2019, $row[4]);
-				$this->insertFactor($km, $motor, 2018, $row[5]);
-				$this->insertFactor($km, $motor, 2017, $row[6]);
-				$this->insertFactor($km, $motor, 2016, $row[7]);
-				$this->insertFactor($km, $motor, 2015, $row[8]);
-			}
-
-			if ($cont>=14 && $cont<=19) {
-				Log::info("Guardamos data");
-				$km = Km::firstOrCreate([
-					'min_km' => $row[0],
-					'max_km' => $row[1]
-				]);
-
-				$motor = Motor::firstOrCreate([
-					'min_cc' => 500,
-					'max_cc' => 699
-				]);
-
-				$this->insertFactor($km, $motor, 2021, $row[2]);
-				$this->insertFactor($km, $motor, 2020, $row[3]);
-				$this->insertFactor($km, $motor, 2019, $row[4]);
-				$this->insertFactor($km, $motor, 2018, $row[5]);
-				$this->insertFactor($km, $motor, 2017, $row[6]);
-				$this->insertFactor($km, $motor, 2016, $row[7]);
-				$this->insertFactor($km, $motor, 2015, $row[8]);
-			}
-
-			if ($cont>=20 && $cont<=25) {
-				Log::info("Guardamos data");
-				$km = Km::firstOrCreate([
-					'min_km' => $row[0],
-					'max_km' => $row[1]
-				]);
-
-				$motor = Motor::firstOrCreate([
-					'min_cc' => 700,
-					'max_cc' => 899
-				]);
-
-				$this->insertFactor($km, $motor, 2021, $row[2]);
-				$this->insertFactor($km, $motor, 2020, $row[3]);
-				$this->insertFactor($km, $motor, 2019, $row[4]);
-				$this->insertFactor($km, $motor, 2018, $row[5]);
-				$this->insertFactor($km, $motor, 2017, $row[6]);
-				$this->insertFactor($km, $motor, 2016, $row[7]);
-				$this->insertFactor($km, $motor, 2015, $row[8]);
-			}
-
-			if ($cont>=26 && $cont<=31) {
-				Log::info("Guardamos data");
-				$km = Km::firstOrCreate([
-					'min_km' => $row[0],
-					'max_km' => $row[1]
-				]);
-
-				$motor = Motor::firstOrCreate([
-					'min_cc' => 900,
-					'max_cc' => 99999
-				]);
-
-				$this->insertFactor($km, $motor, 2021, $row[2]);
-				$this->insertFactor($km, $motor, 2020, $row[3]);
-				$this->insertFactor($km, $motor, 2019, $row[4]);
-				$this->insertFactor($km, $motor, 2018, $row[5]);
-				$this->insertFactor($km, $motor, 2017, $row[6]);
-				$this->insertFactor($km, $motor, 2016, $row[7]);
-				$this->insertFactor($km, $motor, 2015, $row[8]);
-			}
-
-			$cont++;	
 		}
     }
 

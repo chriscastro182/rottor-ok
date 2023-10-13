@@ -4,6 +4,7 @@ namespace App\Services\VersionService;
 
 use App\Models\Model;
 use App\Models\Version;
+use App\Models\Product;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -67,6 +68,13 @@ class VersionServcie implements IVersionService, \App\Services\BaseService\IBase
     public function all()
     {
         return Version::all();
+    }
+
+    public function allOnSale()
+    {
+        $versionId = Product::all()->pluck('version_id');
+
+        return Version::whereIn('id', $versionId)->get();
     }
 
     public function paginate(int $page)

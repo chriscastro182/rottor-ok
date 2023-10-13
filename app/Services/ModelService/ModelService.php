@@ -3,6 +3,7 @@
 namespace App\Services\ModelService;
 
 use App\Models\Model;
+use App\Models\Product;
 use App\Services\BaseService\IBaseService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -142,4 +143,15 @@ class ModelService implements IBaseService, IModelService
 
         return $model->version()->get();
     }
+
+	/**
+	 * Function that retrieves all the resources on sale
+	 *
+	 * @return array
+	 */
+	public function allOnSale()
+	{
+		$productIds = Product::all()->pluck('model_id');
+		return Model::whereIn('id', $productIds)->get();
+	}
 }

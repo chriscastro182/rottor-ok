@@ -121,32 +121,43 @@ class ProductService implements IBaseService, IProductService
 
     public function filter(array $data, int $paginate)
     {
+		$request = $data['filters'][0];
+
         Log::info("Datos para filtrar");
-        Log::info($data);
+        Log::info($request);
+		$models = $request['model_id'];
+		$brands = $request['brand_id'];
+		$versions = $request['version_id'];
+		$year = $request['year'];
+		$minKM =$request['minKmRange'] ?? 0;
+		$maxKM = $request['maxKmRange'] ?? 99999999;
+		$kms = [$minKM, $maxKM];
+		$minPrice = $request['minPriceRange'] ?? 0;
+		$maxPrice = $request['maxPriceRange'] ?? 99999999;
+		$prices = [$minPrice, $maxPrice];
+
         $query = Product::where('id', '>', 1)->whereNull("sold")->whereNull("apartada");
 
 
-        if ( isset($data['filters'][0]['brand_id']) && $data['filters'][0]['brand_id'] > 0 ){
-            $query->where('brand_id', $data['filters'][0]['brand_id']);
-        }
-        if ( isset($data['filters'][0]['version_id']) && $data['filters'][0]['version_id'] > 0 ){
-            $query->where('version_id', $data['filters'][0]['version_id']);
-        }
-        if ( isset($data['filters'][0]['model_id']) && $data['filters'][0]['model_id'] > 0 ){
-            $query->where('model_id', $data['filters'][0]['version_id']);
-        }
-		if ( isset($data['filters'][0]['year']) && $data['filters'][0]['year'] > 0 ){
-			//dd($data['filters'][0]['year']);
-            $query->where('year', $data['filters'][0]['year']);
-        }
-		if ( isset($data['filters'][0]['minKmRange']) && $data['filters'][0]['minKmRange'] > 0 ){
-			//dd($data['filters'][0]['year']);
-			$query->whereBetween('km', [$data['filters'][0]['minKmRange'], $data['filters'][0]['maxKmRange']]);
-        }
-		if ( isset($data['filters'][0]['minPriceRange']) && $data['filters'][0]['minPriceRange'] > 0 ){
-			//dd($data['filters'][0]['year']);
-			$query->whereBetween('price', [$data['filters'][0]['minPriceRange'], $data['filters'][0]['maxPriceRange']]);
-        }
+		$query->when($models, function ($query, $models) {
+					return $query->whereIn('model_id', $models);
+				})->when($brands, function ($query, $brands) {
+					return $query->whereIn('brand_id', $brands);
+				})->when($versions, function ($query, $versions) {
+					return $query->whereIn('version_id', $versions);
+				})->when($year, function ($query, $year) {
+					return $query->where('year', $year);
+				})->when($kms , function ($query, $kms) {
+					Log::info("Kms: ");
+					Log::info($kms);
+					return $query->whereBetween('km', $kms);
+				})->when($prices , function ($query, $prices) {
+					Log::info("Precios: ");
+					Log::info($prices);
+					return $query->whereBetween('price', $prices);
+				});
+
+
         return ProductResource::collection($query->get());
     }
 

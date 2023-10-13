@@ -145,10 +145,23 @@ class FactorController extends Controller
 	public function bulkImporter(Request $request)
 	{
 		if ($request->hasFile('factor_file')) {
-			$import = new MarketLaunchImport();
-			$import->onlySheets('FACTOR KM');
-			Excel::import($import, $request->file('factor_file'));
-		}
-		return view('marketLaunchs.bulk');
+      try {
+
+        $import = new MarketLaunchImport();
+        $import->onlySheets('FACTOR KM');
+  
+        Excel::import($import, $request->file('factor_file'));
+
+        return back()->with('success', 'Archivo Excel con factores, importado con éxito.');
+
+      } catch (\Exception $e) {      
+
+        return back()->with('error', 'Error al importar el archivo Excel de factores: ' . $e->getMessage());
+
+      }
+		} else {
+
+      return back()->with('error', 'Archivo no seleccionado');
+    }
 	}
 }

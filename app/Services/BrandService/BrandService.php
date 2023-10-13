@@ -4,6 +4,7 @@ namespace App\Services\BrandService;
 
 use App\Http\Resources\BrandResource;
 use App\Models\Brand;
+use App\Models\Product;
 use App\Services\BaseService\IBaseService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -99,6 +100,18 @@ class BrandService implements IBaseService, IBrandService
 	{
 		return BrandResource::collection(Brand::all());
 	}
+	
+	/**
+	 * Function that retrieves all the resources
+	 *
+	 * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+	public function allonSale()
+	{
+		$productModelIds = Product::all()->pluck('brand_id');
+		return BrandResource::collection(Brand::whereIn('id', $productModelIds)->get());
+	}
+
 	public function allFecha(int $year)
 	{
 		Log::info('year: '.$year);

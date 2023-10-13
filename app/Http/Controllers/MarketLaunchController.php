@@ -145,13 +145,23 @@ class MarketLaunchController extends Controller
 	 */
 	public function bulkImporter(Request $request)
 	{
+
 		if ($request->hasFile('market_file')) {
-            $import = new MarketLaunchImport();
-            $import->onlySheets('ALGORITMO');
-            Excel::import($import, $request->file('market_file'));
-			//Excel::import(new MarketLaunchImport, $request->file('market_file'));
-		}
-		return view('marketLaunchs.bulk');
+      try {
+
+        
+        $import = new MarketLaunchImport();
+        $import->onlySheets('ALGORITMO');
+        Excel::import($import, $request->file('market_file'));
+        
+        return back()->with('success', 'Archivo Excel importado con éxito.');
+
+      } catch (\Exception $e) {
+          return back()->with('error', 'Error al importar el archivo Excel: ' . $e->getMessage());
+      }
+		} else {
+      return back()->with('error', 'Archivo no seleccionado');
+    }
 	}
 
 }
