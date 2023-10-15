@@ -1,5 +1,6 @@
 <template>
-    <div id="product-appointment-form" class="form">
+
+    <div id="product-appointment-form" class="form" v-if="firstStep">
         <div class="mb-3">
             <label for="name">{{ customer_name }}</label>
             <input type="text" name="name" id="name" class="form-control" v-model="user.name">
@@ -8,10 +9,10 @@
             <label for="lastname">{{ customer_lastname }}</label>
             <input type="text" name="lastname" id="lastname" class="form-control" v-model="user.lastname">
         </div>
-        <div class="mb-3">
+<!--         <div class="mb-3">
             <label for="phone">{{ customer_phone }}</label>
             <input type="tel" name="phone" id="phone" class="form-control" pattern="[0-9]{10}" maxlength="10" v-model="user.phone">
-        </div>
+        </div> -->
         <div class="mb-3">
             <label for="cellphone">{{ customer_cellphone }}</label>
             <input type="tel" name="cellphone" id="cellphone" class="form-control" pattern="[0-9]{10}" maxlength="10" v-model="user.cellphone">
@@ -20,7 +21,7 @@
             <label for="lastname">{{ customer_email }}</label>
             <input type="email" name="email" id="email" class="form-control" v-model="user.email">
         </div>
-        <div class="mb-3">
+<!--         <div class="mb-3">
             <label for="appointment_date">{{ appointment_date }}</label>
             <input type="date" name="day" id="appointment_date" class="form-control" v-model="appointment.day" v-bind:min="fechaMinima">
             
@@ -28,7 +29,7 @@
         <div class="mb-3">
             <label for="appointment_hour">{{ appointment_hour }}</label>
             <input type="time" name="hour" id="appointment_hour" class="form-control" v-model="appointment.hour">
-        </div>
+        </div> -->
         <div class="mx-auto w-50">
             <div class="form-check my-3">
                 <input type="checkbox" name="terms_check" id="terms-check" class="form-check-input" v-model="terms_check">
@@ -43,10 +44,15 @@
             {{ action_message }}
         </div>
         <div class="text-center mx-auto w-50">
-            <input type="submit" :value="appointment_submit" class="btn btn-warning btn-lg text-center mx-auto" @click="makeAppointment" :disabled="!(user.name != '') && (user.lastname != '') && (user.phone != '') && (user.cellphone != '') && (user.email != '') && (appointment.day != '') && (appointment.hour != '')">
-            <p v-if="!(user.name != '') && (user.lastname != '') && (user.phone != '') && (user.cellphone != '') && (user.email != '') && (appointment.day != '') && (appointment.hour != '')">Favor de llenar todos los datos </p>
+            <input type="submit" value="Siguiente" class="btn btn-warning btn-lg text-center mx-auto" @click="makeAppointment">
         </div>
     </div>
+    <div v-else>
+            <div class="meetings-iframe-container" :data-src="'https://meetings.hubspot.com/rottor?embed=true&firstname='+user.name+'&lastname='+user.lastname+'&email='+ user.email"></div>
+
+    </div>
+
+
 </template>
 
 <script>
@@ -70,6 +76,7 @@ export default {
             terms_check: false,
             privacy_check: false,
             is_appointed: false,
+            firstStep: true,
             action_message: ''
         }
     },
@@ -89,8 +96,13 @@ export default {
                 console.info("Data de respuesta");
                 console.info(response);
                 if (response.data.status){
-                    this.action_message = response.data.message;
-                    this.is_appointed = true;
+                    //this.action_message = response.data.message;
+                    //this.is_appointed = true;
+                    console.log('Moto String: ', response.data.bikeString);
+                    this.firstStep = false;
+                    setTimeout(() => {
+                        this.buildScriptSource();
+                    }, 500);
                 }else{
                     alert(response.message);
                 }
@@ -102,6 +114,17 @@ export default {
       const fecha = new Date();
       fecha.setDate(fecha.getDate() + 1); // suma un día a la fecha actual
       return fecha.toISOString().split('T')[0]; // devuelve una cadena de fecha formateada
+    },
+    buildScriptSource(){
+        const script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = 'https://static.hsappstatic.net/MeetingsEmbed/ex/MeetingsEmbedCode.js';
+
+        // Obtener el div de Meetings Embed Container
+        const containerDiv = this.$el.querySelector('.meetings-iframe-container');
+
+        // Insertar el script después del div
+        containerDiv.parentNode.insertBefore(script, containerDiv.nextSibling);
     }
   }
 }

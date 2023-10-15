@@ -7,12 +7,14 @@ use App\Services\AppointmentService\IAppointmentService;
 use App\Services\CustomerService\ICustomerService;
 use App\Services\CustomMarketService\ICustomMarketService;
 use App\Services\QuotationService\IQuotationService;
+use App\Services\ProductService\IProductService;
 use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\CorreoDeCotizacion;
+use App\Model\Product;
 
 class AppointmentController extends Controller
 {
@@ -21,12 +23,13 @@ class AppointmentController extends Controller
     private $customerService;
     private $quotationService;
 
-    public function __construct(IAppointmentService $appointmentService, ICustomMarketService $customMarketService, ICustomerService $customerService, IQuotationService $quotationService)
+    public function __construct(IAppointmentService $appointmentService, ICustomMarketService $customMarketService, ICustomerService $customerService, IQuotationService $quotationService, IProductService $productService)
     {
         $this->appointmentService = $appointmentService;
         $this->customMarketService = $customMarketService;
         $this->customerService = $customerService;
         $this->quotationService = $quotationService;
+        $this->productService = $productService;
     }
 
     /**
@@ -226,7 +229,6 @@ class AppointmentController extends Controller
         }*/
 
         $customerData = $request->get('user');
-        $appointmentData = $request->get('appointment');
         $customerData['password'] = md5(rand());
         Log::info("Data del cliente");
         Log::info($customerData);
@@ -241,33 +243,59 @@ class AppointmentController extends Controller
 
         if ($customer){
             Log::info('Si hay cliente');
-            $appointmentData['customer_id'] = $customer->id;
 
-            Log::info("Data de la cita");
-            Log::info($appointmentData);
-            if ($appointment = $this->appointmentService->create($appointmentData)){
+            $product = $this->productService->get($request->get('product_id'));
+            
+            $hubspotApiUrl = 'https://api.hubapi.com/crm/v3/objects/contacts';
+            $accessToken = 'pat-na1-0498ad2e-ceb6-4bbc-a723-f3e95addf05a';
+
+            if (!$product) {
+                return response()->json(array('status' => false, 'message' => __('appointment.fail_register')));
+            }
+
+            $bikeString = $product->brand->name.'-'.$product->model->description.'-'.$product->version->name.'-'.$product->year.'-'.$product->km;
+
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $accessToken,
+                'Content-Type' => 'application/json',
+            ])->post($hubspotApiUrl, [
+                'properties' => [
+                    'firstname' => $customer->name,
+                    'lastname' => $customer->lastname,
+                    'email' => $customer->email,
+                    'phone' => $customer->cellphone,
+                    'tipo' => 'Comprar',
+                    'datos_moto' => $bikeString,
+                ],
+            ]);
+
+            // Obtén la respuesta de la API
+            $responseBody = $response->body();
+            
+            // Verificar la respuesta
+            if ($response->successful()) {
+                return response()->json(array('status' => true, 'message' => __('appointment.success_register')));
+            } else {
+                Log::info('Error al registrar a Hubspot');
+                Log::info($customer);
+                return response()->json(array('status' => true, 'message' => __('appointment.fail_register')));
+            }
+
+
+            /* if ($appointment = $this->appointmentService->create($appointmentData)){
                 Log::info("Se registro la cita. Se procede a asignar el producto a la cita");
                 Log::info($request->get('product_id'));
                 $appointment->products()->attach($request->get('product_id'));
-                //metemos en una variable los datos que recogimos del formulario y los metemos a un string
-                /*
-                name: '',
-                lastname: '',
-                phone: '',
-                cellphone: '',
-                email: '',
-                */
+                
                 $subject = "Agendar cita";
-                //unimos en un array los datos customer y appointment
                 $mensaje = array_merge($customerData, $appointmentData);
 
-                //enviamos el correo
                 Mail::to('contacto@rottor.mx')->send(new CorreoDeCotizacion($subject,$mensaje));
                 return response()->json(array('status' => true, 'message' => __('appointment.success_register'), 'appointment' => $appointment));
-            }
+            } */
+        } else {
             return response()->json(array('status' => false, 'message' => __('appointment.fail_register')));
         }
 
-        return response()->json(array('status' => false, 'message' => __('appointment.fail_register')));
     }
 }
