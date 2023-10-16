@@ -21,7 +21,7 @@
             <label for="lastname">{{ customer_email }}</label>
             <input type="email" name="email" id="email" class="form-control" v-model="user.email">
         </div>
-<!--         <div class="mb-3">
+        <!-- <div class="mb-3" >
             <label for="appointment_date">{{ appointment_date }}</label>
             <input type="date" name="day" id="appointment_date" class="form-control" v-model="appointment.day" v-bind:min="fechaMinima">
             
@@ -82,6 +82,7 @@ export default {
     },
     methods: {
         makeAppointment: function () {
+            console.log(`APPOINTMENT `,this.appointment);
             axios({
                 method: 'POST',
                 url: '/api/appointment/product',

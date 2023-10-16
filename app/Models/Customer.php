@@ -12,7 +12,7 @@ class Customer extends Model
 
 	protected $table = 'customer';
 
-	protected $fillable = ['name', 'lastname', 'email', 'password', 'cellphone', 'phone', 'gender', 'birth_date', 'ip', 'last_access'];
+	protected $fillable = ['name', 'lastname', 'email', 'password', 'cellphone', 'phone', 'gender', 'birth_date', 'ip', 'last_access', 'hubspot_id'];
 
     /**
      * The attributes that should be hidden for arrays.
