@@ -152,8 +152,16 @@
 										<td v-if="coti.exchange_payment == 0"> N/A</td>
                                         <td>${{ new Intl.NumberFormat().format(coti.allocation_payment) }}</td>
                                     </tr>
-                                    <tr>
-                                        <td colspan="3"><button class="btn btn-dark text-center h5" @click="gotToAppointment">Agendar cita de inspección</button></td>
+
+                                    <tr >
+                                        <td colspan="3">
+                                            <div class="text-center">
+                                                <h3 class="text-center">Agenda tu cita de Inspección</h3>
+                                            </div>
+                                            <div class="meetings-iframe-container" :data-src="'https://meetings.hubspot.com/rottor?embed=true&firstname='+user.name+'&lastname='+user.lastname+'&email='+ user.email"></div>
+
+                                        </td>
+                                        <!-- <td colspan="3"><button class="btn btn-dark text-center h5" @click="gotToAppointment">Agendar cita de inspección</button></td> -->
                                     </tr>
                                     </tbody>
                                     <tbody v-else>
@@ -175,7 +183,7 @@
                         </div><!-- #full-cotization -->
                         <div id="cotization-selection" v-show="current_state =='appointment'">
                             <div class="section-title my-3">
-                                <h2 class="text-center">Agenda tu cita para evaluar la cotización</h2>
+                                <h2 class="text-center">Déjanos tus datos para ver la cotización</h2>
                             </div>
                             <div class="section-content my-3">
                                 <div class="alert alert-success" v-show="is_appointed">
@@ -198,22 +206,24 @@
                                         <label class="form-label" for="phone"></label>
                                         <input id="phone" class="form-control" type="phone" name="phone" v-model="user.phone" placeholder="EJ. 55 5555 5555" autocomplete="phone">
                                     </div>
-                                    <div class="form-group">
+                                    <!-- <div class="form-group">
                                         <label class="form-label" for="phone"></label>
                                         <input id="date" class="form-control" type="date" name="date" v-model="appointment.day" placeholder="EJ. 00/00/0000" autocomplete="date" v-bind:min="fechaMinima">
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label" for="phone"></label>
                                         <input id="time" class="form-control" type="time" name="time" v-model="appointment.hour" placeholder="EJ. 00:00" autocomplete="time">
-                                    </div>
+                                    </div> -->
                                     <small class="text-secondary my-2">Al continuar, acepto los Términos y Condiciones, Política de Privacidad de ROTTOR</small>
-                                    <button class="btn btn-secondary" @click="getAppointment()">Generar cita</button>
+                                    <br>
+                                    <button class="btn btn-secondary" @click="getAppointment()">Ver Cotización</button>
+
                                 </div>
                             </div><!-- .section-content -->
                             <div class="section-footer">
                                 <div class="row">
                                     <div class="col-12">
-                                        <button class="btn btn-secondary" @click="returnState('appointment')">Regresar</button>
+                                        <button class="btn btn-secondary" @click="returnState('km')">Regresar</button>
                                     </div>
                                 </div>
                             </div><!-- .section-footer -->
@@ -417,7 +427,7 @@ export default{
             console.log('imprimimos el version');
             console.log(version);
             this.customer_selection.version = version.id;
-            this.customer_selection.version2 = version.name;
+            this.customer_selection2.version = version.name;
             this.getKms();
             this.title[3] = version.name;
             this.current_state = 'km';
@@ -432,7 +442,8 @@ export default{
             this.title[4] = km.min_km+' - '+km.max_km;
             $('#km_state').addClass('state-bg');
             this.getCotization()
-            this.current_state = 'full';
+            //this.current_state = 'full';
+            //this.current_state = 'appointment';
         },
         getBrands: function(){
             axios({
@@ -484,7 +495,7 @@ export default{
                 console.info(response.data);
                 this.cotization = response.data;
                 if (this.checkCotization(this.cotization))
-                    this.current_state = 'full';
+                    this.current_state = 'appointment';
                 else
                     this.current_state = 'custom';
             });
@@ -499,18 +510,32 @@ export default{
                     market: this.cotization[0],
                     customer: this.customer_selection,
                     appointment: this.appointment,
-                    customer2: this.customer_selection,
+                    customer2: this.customer_selection2,
                 }
             }).then( (response) => {
                 console.info(response.data);
                 if (response.data.state){
-                    this.action_message = response.data.message;
-                    this.is_appointed = true;
+                    //this.action_message = response.data.message;
+                    
+                    //this.is_appointed = true;
+                    this.buildScriptSource();
+                    this.current_state = 'full';
                 }else{
                     this.is_appointed = false;
                     this.action_message = response.data.message;
                 }
             });
+        },
+        buildScriptSource(){
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = 'https://static.hsappstatic.net/MeetingsEmbed/ex/MeetingsEmbedCode.js';
+
+            // Obtener el div de Meetings Embed Container
+            const containerDiv = this.$el.querySelector('.meetings-iframe-container');
+
+            // Insertar el script después del div
+            containerDiv.parentNode.insertBefore(script, containerDiv.nextSibling);
         },
         changeState: function(state){
             this.current_state = state;

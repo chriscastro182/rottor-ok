@@ -52,6 +52,8 @@ class AppointmentController extends Controller
      */
     public function store(Request $request)
     {
+        
+        $action = 'Vender';
         $customerData = $request->get('user');
         $customerData['password'] = md5(rand());
         $market = $request->get('market');
@@ -59,70 +61,8 @@ class AppointmentController extends Controller
         $customerSelection2 = $request->get('customer2');
         $appointmentData = $request->get('appointment');
         $subject = "Agendar cita";
-        //unimos en un array los datos customer y appointment
-        $mensajeOriginal = array();
-        
-        if (gettype($customerData) == "array") {
-            //Unimos con mensajeOriginal
-            $mensajeOriginal = array_merge($mensajeOriginal,$customerData);
-        }
-        if (gettype($market) == "array") {
-            //Unimos con mensajeOriginal
-            $mensajeOriginal = array_merge($mensajeOriginal,$market);
-        }
-        if (gettype($appointmentData) == "array") {
-            //Unimos con mensajeOriginal
-            $mensajeOriginal = array_merge($mensajeOriginal,$appointmentData);
-        }
-        if (gettype($customerSelection2) == "array") {
-            //Unimos con mensajeOriginal
-            $mensajeOriginal = array_merge($mensajeOriginal,$customerSelection2);
-        }
-        $mensaje = [];
-        // traducimos lo que tiene el array en otro string year  brand  model  version  km  cc  name  lastname  email  phone
-        foreach ($mensajeOriginal as $key => $value) {
-            if ($key == 'name') {
-                $mensaje['nombre'] = $value;
-            }
-            elseif ($key == 'lastname') {
-                $mensaje['apellido'] = $value;
-            }
-            elseif ($key == 'email') {
-                $mensaje['correo'] = $value;
-            }
-            elseif ($key == 'phone') {
-                $mensaje['telefono'] = $value;
-            }
-            elseif ($key == 'brand') {
-                $mensaje['marca'] = $value;
-            }
-            elseif ($key == 'model') {
-                $mensaje['modelo'] = $value;
-            }
-            //version
-            elseif ($key == 'version') {
-                $mensaje['version'] = $value;
-            }
-            //year
-            elseif ($key == 'year') {
-                $mensaje['año'] = $value;
-            }
-            //km
-            elseif ($key == 'km') {
-                $mensaje['kilometraje'] = $value;
-            }
-            //dia
-            elseif ($key == 'day') {
-                $mensaje['dia'] = $value;
-            }
-            //hora 
-            elseif ($key == 'hour') {
-                $mensaje['hora'] = $value;
-            }
-
-        }
-
-
+        Log::info("Request completo de la cita");
+        Log::info($request);
         //Se procede a procesar al usuario
         if ($existingCustomer = $this->customerService->getByEmail($customerData['email'])) {
             // Si ya existe se asigna a la variable customer
@@ -140,21 +80,206 @@ class AppointmentController extends Controller
             $quotationData['total'] = $market['full_payment'];
             $quotationData['is_cash'] = true;
             // Si ya trae una pre cotizacion
+            $appointmentData = new Appointment();
+
+            $appointmentData->day = date('Y-m-d');
+            $appointmentData->hour = '00:00:00';
+
+            // Registro de customer en CRM
+            $hubspotApiUrl = 'https://api.hubapi.com/crm/v3/objects/contacts';
+            $accessToken = 'pat-na1-0498ad2e-ceb6-4bbc-a723-f3e95addf05a';
+            
+            $customerSelection2['brand'];
+
+            $bikeString = $appointmentData->day.'-'.$action.'-'.$customerSelection2['brand'].'-'.
+                            $customerSelection2['model'].'-'.$customerSelection2['year'].'-'.
+                            $customerSelection2['km'].'km - $'.$market['full_payment'].'- $'.
+                            $market['exchange_payment'].'- $'.$market['allocation_payment'];
+
+
+
             if ($market['quote_id']){
-                $appointmentData['customer_id'] = $customer->id;
-                if ($appointment = $this->appointmentService->create($appointmentData)){
-                    $appointment->quotations()->sync([$market['quote_id']]);
-                    Mail::to('contacto@rottor.mx')->send(new CorreoDeCotizacion($subject,$mensaje));
-                    return response()->json(array('state' => true, 'message' => "Se registro la cita correctamente", 'appointment' => $appointment));
+
+                $appointmentData->customer_id = $customer->id;
+
+                if ($appointment = $appointmentData->save()){
+                    Log::info("Se registro la cita. Se procede a asignar la cotización a la cita");
+                    Log::info($appointmentData->id);
+                    $appointmentSaved = $this->appointmentService->get($appointmentData->id);
+
+                    $appointmentSaved->quotations()->sync([$market['quote_id']]);
+
+                    $response = Http::withHeaders([
+                        'Authorization' => 'Bearer ' . $accessToken,
+                        'Content-Type' => 'application/json',
+                    ])->post($hubspotApiUrl, [
+                        'properties' => [
+                            'firstname' => $customer->name,
+                            'lastname' => $customer->lastname,
+                            'email' => $customer->email,
+                            'phone' => $customer->cellphone,
+                            'tipo' => $action,
+                            'datos_moto' => $bikeString,
+                        ],
+                    ]);
+
+                    // Obtén la respuesta de la API
+                    $responseBody = $response->body();
+
+                    // Si registra usuario nuevo: IF, Si el usuario ya existe: ELSE
+                    if ($response->successful()) {
+                        Log::info('Response');
+                        Log::info($response->json());
+                        $hubspotCustomer =$response->json();
+                        $customer->hubspot_id = $hubspotCustomer['id'];
+                        // $this->customerService->update($customer, $customer->id);
+                        $customer->save();
+                        return response()->json(array('state' => true, 'message' => __('appointment.success_register')));
+                    } else {
+                        Log::info('Error al registrar a Hubspot');
+                        Log::info($response->json());
+                        $hubspotApiUrl = 'https://api.hubapi.com/crm/v3/objects/contacts/'.$customer->hubspot_id.'?properties=datos_moto';
+                        
+                        $response2 = Http::withHeaders([
+                            'Authorization' => 'Bearer ' . $accessToken,
+                            ])->get($hubspotApiUrl);
+                            
+                        Log::info('ResponseBody2');
+                        $responseBody2 = $response2->body(); 
+                        Log::info($responseBody2);
+
+                            
+                        if ($response2->successful()) {
+                            // Obtén la respuesta de la API
+                            Log::info('Response encontro usuario Hubspot');
+                            Log::info($response2->json());
+                            
+                            $responseCustomer = $response2->json();
+                            $datosMoto = $responseCustomer['properties']['datos_moto'];
+                            $datosMoto = $datosMoto.PHP_EOL.$bikeString;
+                            Log::info($datosMoto);
+                            
+                            $response3 = Http::withHeaders([
+                                'Authorization' => 'Bearer ' . $accessToken,
+                                'Content-Type' => 'application/json',
+                            ])->patch($hubspotApiUrl, [
+                                'properties' => [
+                                    'datos_moto' => $datosMoto,
+                                ],
+                            ]);
+                            $responseBody3 = $response3->body(); 
+
+                            if ($response3->successful()) {
+                                Log::info('Datos de moto actualizados en Hubspot');
+                            } else {
+                                Log::info('Error al actualizar datos de moto, en Hubspot');
+                            }
+
+                            
+                        } else {
+                            Log::info('No se encontró usuario en Hubspot '.$client->hubspot_id);
+                            Log::info($response2->json());
+                        }
+                        return response()->json(array('state' => true, 'message' => __('appointment.success_register')));
+                    }
+
+                    return response()->json(array('state' => true, 'message' => "Se registro la cita correctamente", 'appointment' => $appointmentSaved));
+                    // Mail::to('contacto@rottor.mx')->send(new CorreoDeCotizacion($subject,$mensaje));
                 }else{
                     return response()->json(array('state' => false, 'message' => "No se pudo registrar la cita"));
                 }
             } elseif ($quotation = $this->quotationService->create($quotationData)){// Si no trae una pre cotizacion se crea una
-                $appointmentData['customer_id'] = $customer->id;
-                if ($appointment = $this->appointmentService->create($appointmentData)){
-                    $appointment->quotations()->sync([$quotation->id]);
-                    Mail::to('contacto@rottor.mx')->send(new CorreoDeCotizacion($subject,$mensaje));
-                    return response()->json(array('state' => true, 'message' => "Se registro la cita correctamente", 'appointment' => $appointment));
+                
+                $appointmentData->customer_id = $customer->id;
+                
+                if ($appointment = $appointmentData->save()){
+
+                    $appointmentSaved = $this->appointmentService->get($appointmentData->id);
+
+                    $appointmentSaved->quotations()->sync([$quotation->id]);
+                    
+                    Log::info('Appointment saved');
+                    Log::info($appointmentSaved);
+                    
+
+                    $response = Http::withHeaders([
+                        'Authorization' => 'Bearer ' . $accessToken,
+                        'Content-Type' => 'application/json',
+                    ])->post($hubspotApiUrl, [
+                        'properties' => [
+                            'firstname' => $customer->name,
+                            'lastname' => $customer->lastname,
+                            'email' => $customer->email,
+                            'phone' => $customer->cellphone,
+                            'tipo' => $action,
+                            'datos_moto' => $bikeString,
+                        ],
+                    ]);
+
+        
+                    // Obtén la respuesta de la API
+                    $responseBody = $response->body();
+                    
+                    // Si registra usuario nuevo: IF, Si el usuario ya existe: ELSE
+                    if ($response->successful()) {
+                        Log::info('Response');
+                        Log::info($response->json());
+                        $hubspotCustomer =$response->json();
+                        $customer->hubspot_id = $hubspotCustomer['id'];
+                        // $this->customerService->update($customer, $customer->id);
+                        $customer->save();
+                        return response()->json(array('state' => true, 'message' => __('appointment.success_register')));
+                    } else {
+                        Log::info('Error al registrar a Hubspot');
+                        Log::info($response->json());
+                        $hubspotApiUrl = 'https://api.hubapi.com/crm/v3/objects/contacts/'.$customer->hubspot_id.'?properties=datos_moto';
+                        
+                        $response2 = Http::withHeaders([
+                            'Authorization' => 'Bearer ' . $accessToken,
+                            ])->get($hubspotApiUrl);
+                            
+                        Log::info('ResponseBody2');
+                        $responseBody2 = $response2->body(); 
+                        Log::info($responseBody2);
+        
+                            
+                        if ($response2->successful()) {
+                            // Obtén la respuesta de la API
+                            Log::info('Response encontro usuario Hubspot');
+                            Log::info($response2->json());
+                            
+                            $responseCustomer = $response2->json();
+                            $datosMoto = $responseCustomer['properties']['datos_moto'];
+                            $datosMoto = $datosMoto.PHP_EOL.$bikeString;
+                            Log::info($datosMoto);
+                            
+                            $response3 = Http::withHeaders([
+                                'Authorization' => 'Bearer ' . $accessToken,
+                                'Content-Type' => 'application/json',
+                            ])->patch($hubspotApiUrl, [
+                                'properties' => [
+                                    'datos_moto' => $datosMoto,
+                                ],
+                            ]);
+                            $responseBody3 = $response3->body(); 
+        
+                            if ($response3->successful()) {
+                                Log::info('Datos de moto actualizados en Hubspot');
+                            } else {
+                                Log::info('Error al actualizar datos de moto, en Hubspot');
+                            }
+        
+                            
+                        } else {
+                            Log::info('No se encontró usuario en Hubspot '.$client->hubspot_id);
+                            Log::info($response2->json());
+                        }
+                        return response()->json(array('state'  => true, 'message' => __('appointment.success_register')));
+                    }
+            
+
+                    // Mail::to('contacto@rottor.mx')->send(new CorreoDeCotizacion($subject,$mensaje));
+                    //return response()->json(array('state' => true, 'message' => "Se registro la cita correctamente", 'appointment' => $appointment));
                 }else{
                     return response()->json(array('state' => false, 'message' => "No se pudo registrar la cita"));
                 }
