@@ -138,38 +138,42 @@
                             <div class="section-content">
                                 <table class="table table-striped">
                                     <thead>
-                                    <tr>
+                                    <tr v-if="is_cashable">
                                         <th>Pago de Contado</th>
                                         <th>Pago por Cambio</th>
                                         <th>Pago por consignacion</th>
                                     </tr>
+                                    <tr v-else>
+                                        <th>Pago por consignacion</th>
+                                    </tr>
                                     </thead>
-                                    <tbody v-if="cotization.length > 0">
-                                    <tr v-for="coti in cotization">
-                                        <td v-if="coti.full_payment > 0">${{ new Intl.NumberFormat().format(coti.full_payment) }}</td>
-										<td v-if="coti.full_payment == 0"> N/A</td>
-                                        <td v-if="coti.exchange_payment > 0">${{ new Intl.NumberFormat().format(coti.exchange_payment) }}</td>
-										<td v-if="coti.exchange_payment == 0"> N/A</td>
-                                        <td>${{ new Intl.NumberFormat().format(coti.allocation_payment) }}</td>
-                                    </tr>
-
-                                    <tr >
-                                        <td colspan="3">
-                                            <div class="text-center">
-                                                <h3 class="text-center">Agenda tu cita de Inspección</h3>
-                                            </div>
-                                            <div class="meetings-iframe-container" :data-src="'https://meetings.hubspot.com/rottor?embed=true&firstname='+user.name+'&lastname='+user.lastname+'&email='+ user.email"></div>
-
-                                        </td>
-                                        <!-- <td colspan="3"><button class="btn btn-dark text-center h5" @click="gotToAppointment">Agendar cita de inspección</button></td> -->
-                                    </tr>
+                                    <tbody v-if="is_cashable">
+                                        <tr v-for="coti in cotization">
+                                            <td>${{ new Intl.NumberFormat().format(coti.full_payment) }}</td>
+                                            <td>${{ new Intl.NumberFormat().format(coti.exchange_payment) }}</td>
+                                            <td>${{ new Intl.NumberFormat().format(coti.allocation_payment) }}</td>
+                                        </tr>
+                                        <tr >
+                                            <td colspan="3">
+                                                <div class="text-center">
+                                                    <h3 class="text-center">Agenda tu cita de Inspección</h3>
+                                                </div>
+                                                <div class="meetings-iframe-container" :data-src="'https://meetings.hubspot.com/rottor?embed=true&firstname='+user.name+'&lastname='+user.lastname+'&email='+ user.email"></div>
+                                            </td>
+                                        </tr>
                                     </tbody>
                                     <tbody v-else>
-                                    <tr>
-                                        <td colspan="3" align="center">
-                                            No tenemos cotización para tu moto por el momento. Si gustas puedes mandarnos tus datos en el botón "No encuentras tu moto?" para ponernos en contacto y ofrecerte una cotización.
-                                        </td>
-                                    </tr>
+                                        <tr v-for="coti in cotization">
+                                            <td colspan="3">${{ new Intl.NumberFormat().format(coti.allocation_payment) }}</td>
+                                        </tr>
+                                        <tr >
+                                            <td colspan="3">
+                                                <div class="text-center">
+                                                    <h3 class="text-center">Agenda tu cita de Inspección</h3>
+                                                </div>
+                                                <div class="meetings-iframe-container" :data-src="'https://meetings.hubspot.com/rottor?embed=true&firstname='+user.name+'&lastname='+user.lastname+'&email='+ user.email"></div>
+                                            </td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div><!-- .section-content -->
@@ -230,6 +234,9 @@
                         </div><!-- cotization-selection -->
                         <div id="custom-form" v-show="current_state =='custom'" class="mb-2 mb-sm-4">
                             <div class="card my-4">
+                                <div class="alert alert-warning" v-show="budget_fail">
+                                    {{ action_message }}
+                                </div>
                                 <div class="card-header">
                                     <h3 class="text-body my-2 my-sm-4">Dejanos los datos de tu moto para que a la brevedad te enviemos una cotización</h3>
                                 </div>
@@ -319,6 +326,8 @@ export default{
             models: [],
             versions: [],
             kms: [],
+            is_cashable: false,
+            budget_fail: false,
             current_state: 'year',
             appointment: {
                 day: '',
@@ -362,7 +371,7 @@ export default{
             this.years.push(i);
         }
         this.title[0] = 'Vende tu moto';
-        console.log(this.years)
+        //console.log(this.years)
     },
     computed: {
         fechaMinima() {
@@ -546,17 +555,31 @@ export default{
         },
         checkCotization: function(cotizations){
             console.info("Checando la cotizacion");
-            if (cotizations.length > 1){
-                return true;
-            }
-            var cotizationData = cotizations[0];
-            console.info(cotizationData);
-            if (cotizationData.full_payment == 0 && cotizationData.exchange_payment == 0 && cotizationData.allocation_payment == 0){
-                console.info("Los valores son 0");
+            
+            if (cotizations.length>0) {
+                var cotizationData = cotizations[0];
+
+                this.is_cashable = cotizationData.is_cashiable;
+                
+                if (cotizations.length > 1){
+                    return true;
+                } else {
+                    console.info(cotizationData);
+
+                    if (cotizationData.full_payment == 0 && cotizationData.exchange_payment == 0 && cotizationData.allocation_payment == 0){
+                        console.info("Los valores son 0");
+                        return false;
+                    }else{
+                        console.info("Hay valores validos");
+                        return true;
+                    }
+                }
+            } else{
+                this.action_message = 'No tenemos cotización para tu moto por el momento';
+                this.budget_fail = true;
+                console.log( this.action_message);
+                //this.getHelp();
                 return false;
-            }else{
-                console.info("Hay valores validos");
-                return true;
             }
         },
         makeCotization: function(){

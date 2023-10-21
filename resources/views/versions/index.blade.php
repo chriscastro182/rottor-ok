@@ -49,6 +49,7 @@
                 @endforeach
                 </tbody>
             </table>
+            {{ $versions->links() }}
         </div>
     </div>
 @endsection

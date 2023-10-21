@@ -46,7 +46,8 @@
 				</tr>
 				@endforeach
 			</tbody>
-		</table>
+		</table>		
+		{{ $models->links() }}
 	</div>
 </div>
 @endsection

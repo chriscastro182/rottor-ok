@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\CustomerService\ICustomerService;
 use App\Services\CustomMarketService\ICustomMarketService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\CorreoDeCotizacion;
@@ -42,6 +43,7 @@ class CustomMarketController extends Controller
         $customerData = $request->get('user');
         $customerData['password'] = md5(rand());
         $customData = $request->get('custom');
+        $action = 'Custom';
 
         if ($existingCustomer = $this->customerService->getByEmail($customerData['email'])) {
             // Si ya existe se asigna a la variable customer
@@ -52,7 +54,7 @@ class CustomMarketController extends Controller
         }
 
         //unimos customData con customerData
-        $mensajeOriginal = array_merge($customData, $customerData);
+        /* $mensajeOriginal = array_merge($customData, $customerData);
         $mensaje = [];
         // traducimos lo que tiene el array en otro string year  brand  model  version  km  cc  name  lastname  email  phone 
         foreach ($mensajeOriginal as $key => $value) {
@@ -92,10 +94,89 @@ class CustomMarketController extends Controller
 
 
         }
-        $subject = "Cotización de moto";
+        $subject = "Cotización de moto"; */
         if ($customer){
             if ($customMarket = $customer->customMarkets()->create($customData)){
-                Mail::to('deck_chris_182@hotmail.com')->send(new CorreoDeCotizacion($subject,$mensaje));//'Asunto del correo', 'Nombre del destinatario', 'Mensaje personalizado'
+                
+                $hubspotApiUrl = 'https://api.hubapi.com/crm/v3/objects/contacts';
+                $accessToken = 'pat-na1-0498ad2e-ceb6-4bbc-a723-f3e95addf05a';
+            
+                $bikeString = date('Y-m-d').'-'.$action.'-'.$customData['brand'].'-'.$customData['model'].'-'.$customData['year'].'-'.$customData['km'].'-'.$customData['cc'];
+                
+                $response = Http::withHeaders([
+                    'Authorization' => 'Bearer ' . $accessToken,
+                    'Content-Type' => 'application/json',
+                ])->post($hubspotApiUrl, [
+                    'properties' => [
+                        'firstname' => $customer->name,
+                        'lastname' => $customer->lastname,
+                        'email' => $customer->email,
+                        'phone' => $customer->cellphone,
+                        'tipo' => $action,
+                        'datos_moto' => $bikeString,
+                    ],
+                ]);
+
+                // Obtén la respuesta de la API
+                $responseBody = $response->body();
+                
+                // Si registra usuario nuevo: IF, Si el usuario ya existe: ELSE
+                if ($response->successful()) {
+                    Log::info('Response');
+                    Log::info($response->json());
+                    $hubspotCustomer =$response->json();
+                    $customer->hubspot_id = $hubspotCustomer['id'];
+                    // $this->customerService->update($customer, $customer->id);
+                    $customer->save();
+                    return response()->json(array('state' => true, 'message' => __('appointment.success_register')));
+                } else {
+                    Log::info('Error al registrar a Hubspot');
+                    Log::info($response->json());
+                    $hubspotApiUrl = 'https://api.hubapi.com/crm/v3/objects/contacts/'.$customer->hubspot_id.'?properties=datos_moto';
+                    
+                    $response2 = Http::withHeaders([
+                        'Authorization' => 'Bearer ' . $accessToken,
+                        ])->get($hubspotApiUrl);
+                        
+                    Log::info('ResponseBody2');
+                    $responseBody2 = $response2->body(); 
+                    Log::info($responseBody2);
+                        
+                    if ($response2->successful()) {
+                        // Obtén la respuesta de la API
+                        Log::info('Response encontro usuario Hubspot');
+                        Log::info($response2->json());
+                        
+                        $responseCustomer = $response2->json();
+                        $datosMoto = $responseCustomer['properties']['datos_moto'];
+                        $datosMoto = $datosMoto.PHP_EOL.$bikeString;
+                        Log::info($datosMoto);
+                        
+                        $response3 = Http::withHeaders([
+                            'Authorization' => 'Bearer ' . $accessToken,
+                            'Content-Type' => 'application/json',
+                        ])->patch($hubspotApiUrl, [
+                            'properties' => [
+                                'datos_moto' => $datosMoto,
+                            ],
+                        ]);
+                        $responseBody3 = $response3->body(); 
+
+                        if ($response3->successful()) {
+                            Log::info('Datos de moto actualizados en Hubspot');
+                        } else {
+                            Log::info('Error al actualizar datos de moto, en Hubspot');
+                        }
+
+                        return response()->json(array('state' => true, 'message' => __('appointment.success_register')));
+                        
+                    } else {
+                        Log::info('No se encontró usuario en Hubspot '.$client->hubspot_id);
+                        Log::info($response2->json());
+                    }
+                    return response()->json(array('state' => true, 'message' => __('appointment.success_register')));
+                }
+
                 return response()->json(array('state' => true, 'message' => "Se registraron los datos correctamente. En breve te mandaran cotización", 'custom' => $customMarket, 'customer' => $customer));
             }else{
                 return response()->json(array('state' => false, 'message' => "No se pudo registrar la info de la moto"));

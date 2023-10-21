@@ -163,13 +163,22 @@ class MarketLaunchService implements IBaseService, IMarketLaunchService
             if ($factor){
                 $marketResult['is_cashiable'] = $market->is_cashiable;
 				if($marketResult['is_cashiable']){
-					$marketResult['full_payment'] = $market->full_payment - ($market->full_payment*$factor->percentage);
-					$marketResult['exchange_payment'] = $market->exchange_payment - ($market->exchange_payment*$factor->percentage);
+					$marketResult['full_payment'] = $market->full_payment + ($market->full_payment*$factor->percentage);
+					$marketResult['exchange_payment'] = $market->exchange_payment + ($market->exchange_payment*$factor->percentage);
 				}else{
 					$marketResult['full_payment'] = 0;
 					$marketResult['exchange_payment'] = 0;
-				}				
-                $marketResult['allocation_payment'] = $market->allocation_payment - ($market->allocation_payment*$factor->percentage);
+				}					
+                $marketResult['allocation_payment'] = $market->allocation_payment + ($market->allocation_payment*$factor->percentage);
+				Log::info("Se guardan los datos de cotizacion");
+				$quoteInserted = $quoteService->quotateMarket($marketResult, [
+					'factor' => $factor->percentage,
+					'km' => $data['km']
+				]);
+				if($quoteInserted){
+					$marketResult['quote_id'] = $quoteInserted->id;
+				}
+				$marketResults[] = $marketResult;
             }else{
                 $marketResult['is_cashiable'] = $market->is_cashiable;
                 $marketResult['full_payment'] = $market->full_payment;
@@ -177,15 +186,7 @@ class MarketLaunchService implements IBaseService, IMarketLaunchService
                 $marketResult['allocation_payment'] = $market->allocation_payment;
             }
 
-            Log::info("Se guardan los datos de cotizacion");
-            $quoteInserted = $quoteService->quotateMarket($marketResult, [
-                'factor' => $factor->percentage,
-                'km' => $data['km']
-            ]);
-            if($quoteInserted){
-                $marketResult['quote_id'] = $quoteInserted->id;
-            }
-			$marketResults[] = $marketResult;
+
 //		}
 		Log::info('Se obtienen los datos finales');
 		Log::info($marketResults);

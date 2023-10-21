@@ -32,7 +32,7 @@ class ModelController extends Controller
     public function index()
     {
 		return view('models.index', [
-			'models' => $this->modelService->all()
+			'models' => $this->modelService->paginate(10)
 		]);
     }
 
@@ -101,7 +101,7 @@ class ModelController extends Controller
      */
     public function update(Request $request, $id)
     {
-		$data = $request->all();
+		$data = $request->paginate(10);
 
 		if ($this->modelService->update($data, $id)){
             return back()->with(['message' => __('message.success_update')]);
