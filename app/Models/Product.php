@@ -124,4 +124,13 @@ class Product extends Model
     {
         return $this->belongsToMany('App\Models\Appointment', 'appointment_has_product', 'product_id', 'appointment_id');
     }
+	/**
+	 * Function for the relation of the Brand
+	 *
+	 * @return Relation
+	 */
+	public function colorClass()
+	{
+		return $this->belongsTo('App\Models\Color', 'color');
+	}
 }

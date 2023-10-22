@@ -59,6 +59,7 @@
                     <p class="text-secondary">{{ __('product.bill_type') }}: {{ $product->bill_type }}</p>
 					<p class="text-secondary">{{ __('product.tank_capacity') }}: {{ $product->tank_capacity }}</p>
 					<p class="text-secondary">{{ __('product.performance') }}: {{ $product->performance }}</p>
+					<p class="text-secondary">{{ __('product.color') }}: {{ !$product->color ? '' : $product->colorClass->name }}</p>
 					<p class="text-secondary">{{ __('product.extras') }}: {{ $product->extras }}</p>
 					<p class="text-secondary">{{ $product->description }}</p>
 					<a class="btn btn-primary btn-lg h1 p-3" href="{{ route('front.products.form', [$product->id]) }}">{{ __('product.buy') }}</a>

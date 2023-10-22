@@ -25,7 +25,7 @@
             <p class="card-text">{{ __('product.owners') }}: {{ $product->owners }}</p>
             <p class="card-text">{{ __('product.bill_type') }}: {{ $product->bill_type }}</p>
             <p class="card-text">{{ __('product.priority') }}: {{ $product->priority }}</p>
-            <p class="card-text">{{ __('product.color') }}: {{ $product->color }}</p>
+            <p class="card-text">{{ __('product.color') }}: {{ !$product->color ? '' : $product->colorClass->name }}</p>
             @if ($product->sold)
                 <p class="card-text">Estado: 
                     <span>

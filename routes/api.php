@@ -59,7 +59,6 @@ Route::get('customMarket/getLessBikes', 'API\CustomMarketController@getLessQuote
 Route::apiResource('customMarket', 'API\CustomMarketController');
 
 Route::get('product/{id}/images', 'API\ProductController@getImages');
-Route::apiResource('product', 'API\ProductController');
 
 Route::get('quotation/lessCC', 'API\QuotationController@getLessCC');
 Route::get('quotation/mostCC', 'API\QuotationController@getMostCC');

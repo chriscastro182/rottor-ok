@@ -122,10 +122,19 @@
                                 <input id="priority" class="form-control" type="text" name="priority" value="{{ $product->priority }}">
                                 <label for="sold">Escribe del 1 al 1000 la prioridad de aparición, donde 1 es la prioridad más alta y 1000 la más baja</label>
                             </div>
-                            <div class="form-group">
-                                <label for="color">{{ __('product.color') }}</label>
-                                <input id="color" class="form-control" type="text" name="color" value="{{ $product->color }}">
-                            </div>
+							<div class="form-group">
+								<label for="color">{{ __('product.color') }}</label>
+								<select id="color" class="form-control" name="color">
+									<option value="">.: Selecciona :.</option>
+									@foreach($colors as $color)
+                                    @if ($color->id == $product->color)
+                                        <option selected value="{{ $color->id }}">{{ $color->name }}</option>
+                                    @else
+                                        <option value="{{ $color->id }}">{{ $color->name }}</option>                                        
+                                    @endif
+									@endforeach
+								</select>
+							</div>
                         </div>
 
                     </div><!-- .card -->

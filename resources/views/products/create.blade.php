@@ -62,8 +62,14 @@
 							</div>
 							<div class="form-group">
 								<label for="color">{{ __('product.color') }}</label>
-								<input id="color" class="form-control" type="text" name="color">
+								<select id="color" class="form-control" name="color">
+									<option value="">.: Selecciona :.</option>
+									@foreach($colors as $color)
+										<option value="{{ $color->id }}">{{ $color->name }}</option>
+									@endforeach
+								</select>
 							</div>
+
 							<input class="btn btn-primary" type="submit" value="{{ __('product.submit') }}">
 						</div>
 					</div><!-- .card -->

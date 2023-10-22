@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
+            //\Database\Seeders\ColorSeeder::class
             \Database\Seeders\CartStatusSeeder::class,
             \Database\Seeders\OrderStatusSeeder::class
         ]);

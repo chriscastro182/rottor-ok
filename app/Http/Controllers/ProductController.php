@@ -11,6 +11,7 @@ use App\Services\ModelService\IModelService;
 use App\Services\BrandService\IBrandService;
 use App\Services\UploadService\IUploadService;
 use App\Services\AttachmentService\IAttachmentService;
+use App\Models\Color;
 
 class ProductController extends Controller
 {
@@ -60,6 +61,7 @@ class ProductController extends Controller
 			'models' => $this->modelService->all(),
 			'brands' => $this->brandService->all(),
             'versions' => $this->versionService->all(),
+            'colors' => Color::all(),
 		]);
     }
 
@@ -127,7 +129,8 @@ class ProductController extends Controller
             'models' => $this->modelService->all(),
             'brands' => $this->brandService->all(),
             'versions' => $this->versionService->all(),
-            'product' => $this->productService->get($id)
+            'product' => $this->productService->get($id),
+            'colors' => Color::all()
         ]);
     }
 
