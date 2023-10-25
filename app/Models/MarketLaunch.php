@@ -29,6 +29,16 @@ class MarketLaunch extends Model
 	{
 		return $this->belongsTo('App\Models\Model', 'model_id');
 	}
+	
+	/**
+	 * Function for the Model relation
+	 *
+	 * @return Relation
+	 */
+	public function version()
+	{
+		return $this->belongsTo('App\Models\Version', 'version_id');
+	}
 
 	/**
 	 * Function for the Quotation relation

@@ -16,17 +16,17 @@
                             <div class="sell-list-item my-5">
                                 <span class="h3 text-red">1.</span>
                                 <span class="h4 text-uppercase">{{ __('sell.number_one') }}</span><br>
-                                <span class="h5 text-gray">{{ __('sell.sub_one') }}</span>
+                                <span class="h5 text-gray">{{ __('sell.sub_one') }}.</span>
                             </div>
                             <div class="sell-list-item my-5">
                                 <span class="h3 text-red">2.</span>
                                 <span class="h4 text-uppercase">{{ __('sell.number_two') }}</span><br>
-                                <span class="h5 text-gray">{{ __('sell.sub_two') }}</span>
+                                <span class="h5 text-gray">{{ __('sell.sub_two') }}.</span>
                             </div>
                             <div class="sell-list-item my-5">
                                 <span class="h3 text-red">3.</span>
                                 <span class="h4 text-uppercase">{{ __('sell.number_three') }}</span><br>
-                                <span class="h5 text-gray">{{ __('sell.sub_three') }}</span>
+                                <span class="h5 text-gray">{{ __('sell.sub_three') }}.</span>
                             </div>
                         </div>
                     </div>

@@ -39,7 +39,7 @@ class FirstSheetAlgorithmImport implements ToCollection, WithHeadingRow
 				]);
 				$version = Version::firstOrCreate([
 					'model_id' => $model->id,
-					'name' => empty($row['version']) ? 'N/A': $row['version'],
+					'name' => $row['version'],
 					'year' => $row['ano']
 				]);
 

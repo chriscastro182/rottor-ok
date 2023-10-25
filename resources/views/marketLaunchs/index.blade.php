@@ -47,7 +47,7 @@
 				<tr>
 					<td>{{ $market->brand->name }}</td>
 					<td>{{ $market->model->description }}</td>
-                    <td>{{ $market->version ? $market->version->name : 'N/A' }}</td>
+                    <td>{{ $market->version->name }}</td>
 					<td>{{ $market->year }}</td>
 					<td>{{ $market->cc }}</td>
 					<td>{{ $market->is_cashiable }}</td>
