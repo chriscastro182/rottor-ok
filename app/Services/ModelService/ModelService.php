@@ -4,6 +4,7 @@ namespace App\Services\ModelService;
 
 use App\Models\Model;
 use App\Models\Product;
+use App\Models\MarketLaunch;
 use App\Services\BaseService\IBaseService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -117,7 +118,12 @@ class ModelService implements IBaseService, IModelService
 	 */
 	public function byBrand($year,$brand_id)
 	{
-		$latestCreatedAt = DB::table('model')
+		$markets = MarketLaunch::where('brand_id',$brand_id)->where('year',$year)->get();
+		$modelIds = $markets->pluck('model_id');
+		Log::info('Ids: '.$modelIds);
+		$models = Model::all()->whereIn('id', $modelIds);
+		Log::info('Modelos: '.$models);
+		/* $latestCreatedAt = DB::table('model')
 			->rightJoin('market_launch', 'model.id', '=', 'market_launch.model_id')
 			->select(DB::raw('LEFT(MAX(market_launch.created_at), 14)'))
 			->value('created_at');
@@ -133,8 +139,8 @@ class ModelService implements IBaseService, IModelService
 					->where('market_launch.year', '=', $year);
 			})
 			->distinct()
-			->get();
-		return $models;
+			->get(); */
+		return Model::whereIn('id', $modelIds)->get();
 	}
 
     public function getVersions($model_id)

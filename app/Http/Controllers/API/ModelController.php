@@ -4,6 +4,8 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Model;
+use App\Models\Version;
+use App\Models\MarketLaunch;
 use Illuminate\Http\Request;
 use App\Services\ModelService\IModelService;
 use Illuminate\Support\Facades\Log;
@@ -84,12 +86,17 @@ class ModelController extends Controller
 
     public function versions($id, $year)
     {
-        $model = Model::find($id);
-        //convertimos esta linea en sql $model->version()->where('year', $year)->get();
-        $query = $model->version()->where('year', $year);
-        $sql = $query->toSql();
-        Log::info($sql);
-        return $model->version()->where('year', $year)->get();
+        $market = MarketLaunch::where('model_id', $id)->where('year', $year)->get();
+        
+        $versionIds = $market->pluck('version_id');
+
+        Log::info("market ".$market);
+
+        $version = Version::whereIn('id', $versionIds)->get();
+
+        Log::info("version ".$version);
+        
+        return $version;
     }
 
     public function getAllOnSale(){

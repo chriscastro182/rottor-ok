@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use Exception;
 use App\Models\MarketLaunch;
 use App\Models\Brand;
 use App\Models\Model;
@@ -22,7 +23,6 @@ class FirstSheetAlgorithmImport implements ToCollection, WithHeadingRow
     */
     public function collection(Collection $rows)
     {
-		$errors = false;
 		foreach ($rows as $row) {
 
 			$marketToMatch = array();
@@ -31,7 +31,8 @@ class FirstSheetAlgorithmImport implements ToCollection, WithHeadingRow
 			$brand = Brand::firstWhere( 'name', $row['marca'] );
 			if (!$brand) {
 				Log::info("No existe la marca: ".$row['marca']);
-				$errors=true;
+				throw new Exception("Marca inexistente: ".$row['marca'], 1);
+				
 			} else {
 				$model = Model::firstOrCreate([
 					'description' => $row['modelo'],
@@ -62,26 +63,24 @@ class FirstSheetAlgorithmImport implements ToCollection, WithHeadingRow
 							->where('year',$row['ano'])
 							->where('cc', $row['motor'])->first();
 				//dd($marketData);
-				if (!$errors) {
+				
+				if (!$objMarket) {
+					if($market = MarketLaunch::create($marketData))
+						Log::info("Se guardo la información");
+					else
+						Log::info("No se pudo guardar la info: ".$market->message);
+				} else {
+					$objMarket['is_cashiable'] = $row['efectivo'];
+					$objMarket['full_payment'] = $row['contado'];
+					$objMarket['exchange_payment'] = $row['intercambio'];
+					$objMarket['allocation_payment'] = $row['allocation'];
 
-					if (!$objMarket) {
-						if($market = MarketLaunch::create($marketData))
-							Log::info("Se guardo la información");
-						else
-							Log::info("No se pudo guardar la info: ".$market->message);
-					} else {
-						$objMarket['is_cashiable'] = $row['efectivo'];
-						$objMarket['full_payment'] = $row['contado'];
-						$objMarket['exchange_payment'] = $row['intercambio'];
-						$objMarket['allocation_payment'] = $row['allocation'];
-
-						if($objMarket->update())
-							Log::info("Se actualizó la información");
-						else
-							Log::info("No se pudo actualizar ");
-					}
-					
+					if($objMarket->update())
+						Log::info("Se actualizó la información");
+					else
+						Log::info("No se pudo actualizar ");
 				}
+
 			}
 		}
     }

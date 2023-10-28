@@ -5,6 +5,7 @@ namespace App\Services\BrandService;
 use App\Http\Resources\BrandResource;
 use App\Models\Brand;
 use App\Models\Product;
+use App\Models\MarketLaunch;
 use App\Services\BaseService\IBaseService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -115,8 +116,11 @@ class BrandService implements IBaseService, IBrandService
 	public function allFecha(int $year)
 	{
 		Log::info('year: '.$year);
+		$brandIds = MarketLaunch::where('year', $year)->get();
+		$ids = $brandIds->pluck('brand_id');
+		$brands = Brand::all()->whereIn('id', $ids);
 		// Creamos los nuevos datos a traer
-		$latestCreatedAt = DB::table('brand')
+		/* $latestCreatedAt = DB::table('brand')
 			->rightJoin('market_launch', 'brand.id', '=', 'market_launch.brand_id')
 			->select(DB::raw('LEFT(MAX(market_launch.created_at), 14)'))
 			->value('created_at');
@@ -131,7 +135,7 @@ class BrandService implements IBaseService, IBrandService
 					->where('market_launch.year', '=', $year);
 			})
 			->distinct()
-			->get();
+			->get(); */
 			// ->toSql();
 		// Log::info('brands '.$brands);
 		
@@ -141,7 +145,7 @@ class BrandService implements IBaseService, IBrandService
 
 		// return BrandResource::collection(Brand::all());
 		// traemos los datos de brand donde sean iguales a los que se traen en la variable results
-		return BrandResource::collection(Brand::whereIn('id', $brands->pluck('id'))->get());
+		return BrandResource::collection($brands);
 
 	}
 	/**

@@ -129,23 +129,30 @@ class MarketLaunchService implements IBaseService, IMarketLaunchService
 			->first();
 			
 
-		Log::info($data['brand']);
-		Log::info($data['model']);
-		Log::info($data['version']);
-		Log::info($data['year']);
+		Log::info("Brand ".$data['brand']);
+		Log::info("Model ".$data['model']);
+		Log::info("Version ".$data['version']);
+		Log::info("Año ".$data['year']);
+
+		/* if ($market) {
+			Log::info("Informacion del mercadeo");
+			Log::info($market);
+		} else {
+			# code...
+			Log::info("No hay market");
+		} */
 		
-		//contamos cuantos resultados trajo la consulta
-		Log::info("contamos los resultados");
-		Log::info($market->id);
-		Log::info($market->count());
+		
+
 //		foreach ($markets as $market) {
 			Log::info("Informacion del mercadeo");
 			Log::info($market);
-
+			
 			Log::info("Se obtiene la información del motor");
 			$motor = Motor::where('min_cc', '<=', $market->cc)
-				->where('max_cc', '>=', $market->cc)
-				->first();
+			->where('max_cc', '>=', $market->cc)
+			->first();
+			Log::info("Motor");
 			Log::info($motor);
 
 			Log::info("Se obtiene la información del factor");
