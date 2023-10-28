@@ -28,19 +28,21 @@ class FirstSheetAlgorithmImport implements ToCollection, WithHeadingRow
 			$marketToMatch = array();
 			$marketData = array();
 			
-			$brand = Brand::firstWhere( 'name', $row['marca'] );
+			$brand = Brand::firstWhere( 'name', trim($row['marca']) );
 			if (!$brand) {
 				Log::info("No existe la marca: ".$row['marca']);
 				throw new Exception("Marca inexistente: ".$row['marca'], 1);
 				
 			} else {
+				$description = strtoupper( trim($row['modelo']) );
 				$model = Model::firstOrCreate([
-					'description' => $row['modelo'],
+					'description' => $description,
 					'brand_id' => $brand->id
 				]);
+				$nameVersion = strtoupper( trim($row['version']) );
 				$version = Version::firstOrCreate([
 					'model_id' => $model->id,
-					'name' => $row['version'],
+					'name' => $nameVersion,
 					'year' => $row['ano']
 				]);
 
