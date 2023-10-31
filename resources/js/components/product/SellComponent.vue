@@ -193,6 +193,10 @@
                                 <div class="alert alert-success" v-show="is_appointed">
                                     {{ action_message }}
                                 </div>
+                                <div class="alert alert-success" v-show="validation_fail">
+                                    {{ action_message }}
+                                </div>
+                                
                                 <div class="form">
                                     <div class="form-group">
                                         <label class="form-label" for="name"></label>
@@ -207,8 +211,8 @@
                                         <input id="email" class="form-control" type="email" name="email" v-model="user.email" placeholder="EJ. ejemplo@mail.com" autocomplete="email">
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label" for="phone"></label>
-                                        <input id="phone" class="form-control" type="phone" name="phone" v-model="user.phone" placeholder="EJ. 55 5555 5555" autocomplete="phone">
+                                        <label class="form-label" for="cellphone"></label>
+                                        <input id="cellphone" class="form-control" type="cellphone" name="cellphone" v-model="user.cellphone" placeholder="EJ. 55 5555 5555" autocomplete="cellphone">
                                     </div>
                                     <!-- <div class="form-group">
                                         <label class="form-label" for="phone"></label>
@@ -276,7 +280,7 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="custom-phone" class="label-control">Teléfono:</label>
-                                            <input id="custom-phone" class="form-control" type="phone" name="phone" v-model="user.phone" placeholder="EJ. 55 5555 5555" pattern="[0-9]{10}" maxlength="10">
+                                            <input id="custom-phone" class="form-control" type="cellphone" name="cellphone" v-model="user.phone" placeholder="EJ. 55 5555 5555" pattern="[0-9]{10}" maxlength="10">
                                         </div>
                                         <div class="alert alert-success text-uppercase h4" v-show="is_custom_send">
                                             {{ action_message }}
@@ -284,8 +288,8 @@
                                     </div><!-- .form -->
                                 </div><!-- .card-body -->
                                 <div class="card-footer">
-                                    <button class="btn btn-dark btn-lg text-white" @click="makeCotization" :disabled="!(user.phone != '' && user.email != '' && user.lastname != '' && user.name != '' && customer_custom.cc != '' && customer_custom.km != '' && customer_custom.model != '' && customer_custom.brand != '' && customer_custom.year != '')">Cotizar</button>
-                                    <p v-if="!(user.phone != '' && user.email != '' && user.lastname != '' && user.name != '' && customer_custom.cc != '' && customer_custom.km != '' && customer_custom.model != '' && customer_custom.brand != '' && customer_custom.year != '')">Favor de llenar todos los datos</p>
+                                    <button class="btn btn-dark btn-lg text-white" @click="makeCotization" :disabled="!(user.cellphone != '' && user.email != '' && user.lastname != '' && user.name != '' && customer_custom.cc != '' && customer_custom.km != '' && customer_custom.model != '' && customer_custom.brand != '' && customer_custom.year != '')">Cotizar</button>
+                                    <p v-if="!(user.cellphone != '' && user.email != '' && user.lastname != '' && user.name != '' && customer_custom.cc != '' && customer_custom.km != '' && customer_custom.model != '' && customer_custom.brand != '' && customer_custom.year != '')">Favor de llenar todos los datos</p>
                                 </div><!-- .card-footer -->
                             </div><!-- .card -->
                             <div class="section-footer my-4">
@@ -314,6 +318,7 @@ export default{
         return {
             title: [],
             is_appointed: false,
+            validation_fail: false,
             is_custom_send: false,
             action_message: '',
             searchBrand: '',
@@ -361,7 +366,7 @@ export default{
                 name: '',
                 lastname: '',
                 email: '',
-                phone: ''
+                cellphone: ''
             },
             cotization: {}
         }
