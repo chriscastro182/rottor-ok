@@ -101,13 +101,14 @@ class ModelController extends Controller
      */
     public function update(Request $request, $id)
     {
-		$data = $request->paginate(10);
+		  $data = $request->all();
 
-		if ($this->modelService->update($data, $id)){
-            return back()->with(['message' => __('message.success_update')]);
-        }
+		  if ($this->modelService->update($data, $id)){
 
-        return back()->withErrors(['message' => __('message.fail_update')]);
+        return redirect()->route('models.index')->with(['message' => __('message.success_update')]);
+      }
+
+      return back()->withErrors(['message' => __('message.fail_update')]);
     }
 
     /**

@@ -200,19 +200,19 @@
                                 <div class="form">
                                     <div class="form-group">
                                         <label class="form-label" for="name"></label>
-                                        <input id="name" class="form-control" type="text" name="name" v-model="user.name" placeholder="EJ. Juan" autocomplete="first-name">
+                                        <input id="name" class="form-control" type="text" name="name" v-model="user.name" placeholder="EJ. Juan" autocomplete="first-name" required>
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label" for="name"></label>
-                                        <input id="lastname" class="form-control" type="text" name="lastname" v-model="user.lastname" placeholder="EJ. Perez" autocomplete="last-name">
+                                        <input id="lastname" class="form-control" type="text" name="lastname" v-model="user.lastname" placeholder="EJ. Perez" autocomplete="last-name" required>
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label" for="email"></label>
-                                        <input id="email" class="form-control" type="email" name="email" v-model="user.email" placeholder="EJ. ejemplo@mail.com" autocomplete="email">
+                                        <input id="email" class="form-control" type="email" name="email" v-model="user.email" placeholder="EJ. ejemplo@mail.com" autocomplete="email" required>
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label" for="cellphone"></label>
-                                        <input id="cellphone" class="form-control" type="cellphone" name="cellphone" v-model="user.cellphone" placeholder="EJ. 55 5555 5555" autocomplete="cellphone">
+                                        <input id="cellphone" class="form-control" type="cellphone" name="cellphone" v-model="user.cellphone" placeholder="EJ. 55 5555 5555" autocomplete="cellphone" required>
                                     </div>
                                     <!-- <div class="form-group">
                                         <label class="form-label" for="phone"></label>
@@ -224,14 +224,15 @@
                                     </div> -->
                                     <small class="text-secondary my-2">Al continuar, acepto los Términos y Condiciones, Política de Privacidad de ROTTOR</small>
                                     <br>
-                                    <button class="btn btn-secondary" @click="getAppointment()">Ver Cotización</button>
-
-                                </div>
-                            </div><!-- .section-content -->
-                            <div class="section-footer">
-                                <div class="row">
-                                    <div class="col-12">
-                                        <button class="btn btn-secondary" @click="returnState('km')">Regresar</button>
+                                    <button class="btn btn-secondary" @click="getAppointment()" :disabled="!(user.cellphone != '' && user.email != '' && user.lastname != '' && user.name != '')">Ver Cotización</button>
+                                    <p v-if="!(user.cellphone != '' && user.email != '' && user.lastname != '' && user.name != '')">Favor de llenar todos los datos</p> 
+                                </div><!-- .section-content -->
+                                <br>
+                                <div class="section-footer">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <button class="btn btn-secondary" @click="returnState('km')">Regresar</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div><!-- .section-footer -->
@@ -280,7 +281,7 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="custom-phone" class="label-control">Teléfono:</label>
-                                            <input id="custom-phone" class="form-control" type="cellphone" name="cellphone" v-model="user.phone" placeholder="EJ. 55 5555 5555" pattern="[0-9]{10}" maxlength="10">
+                                            <input id="custom-phone" class="form-control" type="cellphone" name="cellphone" v-model="user.cellphone" placeholder="EJ. 55 5555 5555">
                                         </div>
                                         <div class="alert alert-success text-uppercase h4" v-show="is_custom_send">
                                             {{ action_message }}
@@ -559,7 +560,6 @@ export default{
             $('#more-button').hide(true);
         },
         checkCotization: function(cotizations){
-            console.info("Checando la cotizacion");
             
             if (cotizations.length>0) {
                 var cotizationData = cotizations[0];
@@ -575,7 +575,7 @@ export default{
                         console.info("Los valores son 0");
                         return false;
                     }else{
-                        console.info("Hay valores validos");
+                        console.info("Cotizacion valida");
                         return true;
                     }
                 }
