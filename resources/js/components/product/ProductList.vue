@@ -113,6 +113,9 @@
                                     <p class="card-text text-body">Versión: {{ product.version}}</p>
                                     <p class="card-text text-body">KM: {{ product.km }}</p>
                                     <p class="text-danger">{{ product.price}}</p>
+                                    <p v-if="product.sold" class="text-success">Vendida</p>
+                                    <p v-if="product.apartada" style="color: rgb(255, 166, 0);">Apartada</p>
+                                    <p v-if="product.color" class="card-text text-body"><i>{{ product.color }}</i></p>
                                 </div>
                                 <div class="col-4">
                                     <img src="/img/products/LOGO_CERTIFICADO.png" alt="Logo Certificado" class="img-fluid">
@@ -295,7 +298,6 @@ export default {
                     filters: this.filters
                 }
             }).then( (response) => {
-                console.info(response);
                 this.products = [];
                 this.products = response.data;
             }).catch(e=>console.error(e));
@@ -316,7 +318,6 @@ export default {
                         response.data.pop();
                     }
                 });
-
                 this.products = response.data;
             }).catch( err => console.error(err));
         },

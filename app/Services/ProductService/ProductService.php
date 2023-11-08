@@ -101,7 +101,7 @@ class ProductService implements IBaseService, IProductService
 	 */
 	public function all()
 	{
-		return Product::whereNull("sold")->whereNull("apartada")->orderBy("priority")->get();
+		return Product::all();
 	}
 
 	/**
@@ -136,7 +136,7 @@ class ProductService implements IBaseService, IProductService
 		$maxPrice = $request['maxPriceRange'] ?? 99999999;
 		$prices = [$minPrice, $maxPrice];
 
-        $query = Product::where('id', '>', 1)->whereNull("sold")->whereNull("apartada");
+        $query = Product::where('id', '>', 1);
 
 
 		$query->when($models, function ($query, $models) {
@@ -177,7 +177,7 @@ class ProductService implements IBaseService, IProductService
 				/* $queryResponse = Product::where('name', 'like', '%' . $keyWord . '%')
 					->whereNull("sold"); */
 
-		$products = Product::whereIn('id', $ids)->whereNull("sold")->whereNull("apartada")->get();
+		$products = Product::whereIn('id', $ids)->get();
 
 		Log::info("Ids para busqueda");
         Log::info($ids->get());

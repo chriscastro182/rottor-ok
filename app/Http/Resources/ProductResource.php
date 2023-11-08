@@ -25,6 +25,9 @@ class ProductResource extends JsonResource
             'image' => $this->attachments()->count() >0 ? asset('storage/'.$this->attachments->first()->url) : "",
             'version' => $this->version_id == NULL ? '' : $this->version()->first()->name,
             'km' => $this->km,
+            'sold' => $this->sold,
+            'apartada' => $this->apartada,
+            'color' => $this->colorClass()->count()>0 ? $this->colorClass->name : "",
         ];
     }
 }

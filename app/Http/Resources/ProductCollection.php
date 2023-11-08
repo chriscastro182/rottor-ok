@@ -22,6 +22,9 @@ class ProductCollection extends ResourceCollection
             'model' => $this->model->description,
             'price' => $this->price,
             'year' => $this->year,
+            'sold' => $this->sold,
+            'apartada' => $this->apartada,
+            'color' => $this->color,
         ];
     }
 }
