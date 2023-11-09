@@ -50,16 +50,22 @@
 				<div class="product-description px-4">
 					<h1 class="text-secondary">{{ $product->name }}</h1>
 					<h2 class="text-secondary">${{ number_format($product->price, 2) }}</h2>
+					@if ($product->sold)
+						<p class="text-success">{{ __('product.sold') }}</p>						
+					@endif
+					@if ($product->apartada)
+						<p style="color: rgb(255, 166, 0);">Apartada</p>					
+					@endif
 					<p class="text-secondary">{{ __('product.brand') }}: {{ $product->brand->name }}</p>
 					<p class="text-secondary">{{ __('product.model') }}: {{ $product->model->description }}</p>
                     <p class="text-secondary">{{ __('product.version') }}: {{ $product->version()->get()->count() > 0 ? $product->version->name : 'N/A' }}</p>
                     <p class="text-secondary">{{ __('product.year') }}: {{ $product->year }}</p>
+					<p class="text-secondary">{{ __('product.color') }}: {{ !$product->color ? '' : $product->colorClass->name }}</p>
 					<p class="text-secondary">{{ __('product.km') }}: {{ $product->km }}</p>
                     <p class="text-secondary">{{ __('product.owners') }}: {{ $product->owners }}</p>
                     <p class="text-secondary">{{ __('product.bill_type') }}: {{ $product->bill_type }}</p>
 					<p class="text-secondary">{{ __('product.tank_capacity') }}: {{ $product->tank_capacity }}</p>
 					<p class="text-secondary">{{ __('product.performance') }}: {{ $product->performance }}</p>
-					<p class="text-secondary">{{ __('product.color') }}: {{ !$product->color ? '' : $product->colorClass->name }}</p>
 					<p class="text-secondary">{{ __('product.extras') }}: {{ $product->extras }}</p>
 					<p class="text-secondary">{{ $product->description }}</p>
 					<a class="btn btn-primary btn-lg h1 p-3" href="{{ route('front.products.form', [$product->id]) }}">{{ __('product.buy') }}</a>

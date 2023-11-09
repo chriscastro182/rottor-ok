@@ -108,14 +108,14 @@
                             <div class="card-body row">
                                 <div class="col-8">
                                     <h5 class="card-title text-body">{{ product.name }}</h5>
+                                    <p v-if="product.sold" class="text-success">Vendida</p>
+                                    <p v-if="product.apartada" style="color: rgb(255, 166, 0);">Apartada</p>
                                     <p class="card-text text-body">{{ product.description }}</p>
                                     <p class="card-text text-body">Año: {{ product.year }}</p>
                                     <p class="card-text text-body">Versión: {{ product.version}}</p>
+                                    <p v-if="product.color" class="card-text text-body">Color: <i>{{ product.color }}</i></p>
                                     <p class="card-text text-body">KM: {{ product.km }}</p>
                                     <p class="text-danger">{{ product.price}}</p>
-                                    <p v-if="product.sold" class="text-success">Vendida</p>
-                                    <p v-if="product.apartada" style="color: rgb(255, 166, 0);">Apartada</p>
-                                    <p v-if="product.color" class="card-text text-body"><i>{{ product.color }}</i></p>
                                 </div>
                                 <div class="col-4">
                                     <img src="/img/products/LOGO_CERTIFICADO.png" alt="Logo Certificado" class="img-fluid">
