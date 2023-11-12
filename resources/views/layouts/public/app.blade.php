@@ -17,6 +17,15 @@
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
 	<script src="https://kit.fontawesome.com/f8f810a40d.js" crossorigin="anonymous"></script>
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-BW4DJ102JV"></script>
+	<script>
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+
+	gtag('config', 'G-BW4DJ102JV');
+	</script>
 	@stack('header_scripts')
 </head>
 <body class="public">

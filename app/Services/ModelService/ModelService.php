@@ -147,7 +147,7 @@ class ModelService implements IBaseService, IModelService
     {
         $model = Model::find($model_id);
 
-        return $model->version()->get();
+        return $model->version()->get()->unique('name');
     }
 
 	/**

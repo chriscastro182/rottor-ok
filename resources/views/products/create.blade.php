@@ -59,6 +59,7 @@
 							<div class="form-group">
 								<label for="priority">{{ __('product.priority') }}</label>
 								<input id="priority" class="form-control" type="text" name="priority">
+								<label for="priority">Escribe del 1 al 10,000 la prioridad de aparición, donde 1 es la prioridad más alta y 10,000 la más baja</label>
 							</div>
 							<div class="form-group">
 								<label for="color">{{ __('product.color') }}</label>

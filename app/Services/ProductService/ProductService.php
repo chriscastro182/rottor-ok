@@ -101,7 +101,9 @@ class ProductService implements IBaseService, IProductService
 	 */
 	public function all()
 	{
-		return Product::all();
+		return Product::all()->sortBy([
+			['priority', 'asc']
+		]);
 	}
 
 	/**
@@ -140,25 +142,27 @@ class ProductService implements IBaseService, IProductService
 
 
 		$query->when($models, function ($query, $models) {
-					return $query->whereIn('model_id', $models);
-				})->when($brands, function ($query, $brands) {
-					return $query->whereIn('brand_id', $brands);
-				})->when($versions, function ($query, $versions) {
-					return $query->whereIn('version_id', $versions);
-				})->when($year, function ($query, $year) {
-					return $query->where('year', $year);
-				})->when($kms , function ($query, $kms) {
-					Log::info("Kms: ");
-					Log::info($kms);
-					return $query->whereBetween('km', $kms);
-				})->when($prices , function ($query, $prices) {
-					Log::info("Precios: ");
-					Log::info($prices);
-					return $query->whereBetween('price', $prices);
-				});
+				return $query->whereIn('model_id', $models);
+			})->when($brands, function ($query, $brands) {
+				return $query->whereIn('brand_id', $brands);
+			})->when($versions, function ($query, $versions) {
+				return $query->whereIn('version_id', $versions);
+			})->when($year, function ($query, $year) {
+				return $query->where('year', $year);
+			})->when($kms , function ($query, $kms) {
+				Log::info("Kms: ");
+				Log::info($kms);
+				return $query->whereBetween('km', $kms);
+			})->when($prices , function ($query, $prices) {
+				Log::info("Precios: ");
+				Log::info($prices);
+				return $query->whereBetween('price', $prices);
+		});
 
 
-        return ProductResource::collection($query->get());
+        return ProductResource::collection($query->get()->sortBy([
+			['priority', 'asc']
+		]));
     }
 
 	public function search(array $data, int $paginate)
@@ -177,7 +181,9 @@ class ProductService implements IBaseService, IProductService
 				/* $queryResponse = Product::where('name', 'like', '%' . $keyWord . '%')
 					->whereNull("sold"); */
 
-		$products = Product::whereIn('id', $ids)->get();
+		$products = Product::whereIn('id', $ids)->get()->sortBy([
+			['priority', 'asc']
+		]);
 
 		Log::info("Ids para busqueda");
         Log::info($ids->get());
