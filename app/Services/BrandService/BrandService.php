@@ -145,7 +145,9 @@ class BrandService implements IBaseService, IBrandService
 
 		// return BrandResource::collection(Brand::all());
 		// traemos los datos de brand donde sean iguales a los que se traen en la variable results
-		return BrandResource::collection($brands);
+		return BrandResource::collection($brands->sortBy([
+			['name', 'asc']
+		]));
 
 	}
 	/**
