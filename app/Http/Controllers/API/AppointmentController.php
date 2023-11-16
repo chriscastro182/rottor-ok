@@ -92,7 +92,7 @@ class AppointmentController extends Controller
             $customerSelection2['brand'];
 
             $bikeString = $appointmentData->day.'-'.$action.'-'.$customerSelection2['brand'].'-'.
-                            $customerSelection2['model'].'-'.$customerSelection2['year'].'-'.
+                            $customerSelection2['model'].'-'.$customerSelection2['version'].'-'$customerSelection2['year'].'-'.
                             $customerSelection2['km'].'km-$'.$market['full_payment'].'-$'.
                             $market['exchange_payment'].'-$'.$market['allocation_payment'];
 
