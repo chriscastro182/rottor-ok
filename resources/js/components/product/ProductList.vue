@@ -99,9 +99,25 @@
                 </div>
             </div>
             <div class="row">
-                <input class="form-control" type="text" id="búsqueda" v-model="filters.keyWord" placeholder="Búsqueda" @keyup="searchPosts(filters.keyWord)" >
-                <hr>
-                <div class="col-12 col-sm-6 col-md-4" v-for="product in products">
+                <div class="col-8">
+                    <input class="form-control " type="text" id="búsqueda" v-model="filters.keyWord" placeholder="Búsqueda" @keyup="searchPosts(filters.keyWord)" >
+                </div>
+                <div class="col-4">
+                    <select class="form-control" id="sortSelect" v-model="selectedSort">
+                        <option value="0" selected>Ordenar por</option>
+                        <option value="1">Mayor Precio</option>
+                        <option value="2">Menor Precio</option>
+                        <option value="3">Mayor Año</option>
+                        <option value="4">Menor Año</option>
+                        <option value="5">Mayor Kilometraje</option>
+                        <option value="6">Menor Kilometraje</option>
+                    </select>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                
+                <div class="col-12 col-sm-6 col-md-4" v-for="product in sortedProducts">
                     <div class="card mb-2 product-card">
                         <a :href="productLink(product.id)">
                             <img class="card-img-top" :src="product.image" alt="">
@@ -140,6 +156,7 @@ export default {
             versions: [],
             models: [],
             years: [],
+            selectedSort: '0', // Valor inicial del select
             minKmRanges: [0, 5001, 10001, 15001, 20001, 25001],
             maxKmRanges: [5000, 10000, 15000, 20000, 25000, 30000],
             minPriceRanges: [0, 50001, 100001, 150001, 200001, 250001],
@@ -169,8 +186,33 @@ export default {
         this.getYears();
     },
     computed: {
+        sortedProducts: {
+            get: function () {
+                let productsCopy = [...this.products];
+                switch (this.selectedSort) {
+                    case '1':
+                        return productsCopy.sort((a, b) => parseFloat(b.price.replace(/[^\d.-]/g, '')) - parseFloat(a.price.replace(/[^\d.-]/g, ''))); // Mayor Precio
+                    case '2':
+                        return productsCopy.sort((a, b) => parseFloat(a.price.replace(/[^\d.-]/g, '')) - parseFloat(b.price.replace(/[^\d.-]/g, ''))); // Menor Precio
+                    case '3':
+                        return productsCopy.sort((a, b) => b.year - a.year); // Mayor Año
+                    case '4':
+                        return productsCopy.sort((a, b) => a.year - b.year); // Menor Año
+                    case '5':
+                        return productsCopy.sort((a, b) => b.km - a.km); // Mayor km
+                    case '6':
+                        return productsCopy.sort((a, b) => a.km - b.km); // Menor km
+                    default:
+                        return productsCopy;  // No hace nada si la opción es "Ordenar por"
+                }
+            },
+            set: function () {
+                // Este setter está vacío porque no necesitamos modificar directamente sortedProducts
+                // Pero es necesario incluirlo para eliminar la advertencia
+            }
+        }
     },
-    methods: {
+    methods: {        
         productLink: function (id){
             return "/products/"+id;
         },
@@ -180,6 +222,7 @@ export default {
                 method: 'GET'
             }).then( (response) => {
                 this.products = response.data;
+                this.sortedProducts = response.data;
             });
         },
         getBrands: function(){
