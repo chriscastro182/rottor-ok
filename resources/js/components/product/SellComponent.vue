@@ -44,7 +44,7 @@
                                     <div class="col-12" >
                                         <ul class="list-group">
                                             <li style="cursor: pointer;" class="list-group-item d-flex align-items-center clickable h5" v-for="brand in filteredBrands" @click="selectBrand(brand)">
-                                                <img style="max-width: 175px; max-height: 70px;" :src="brand.image" class="img-fluid">
+                                                <img style="height: 75px;" :src="brand.image" class="img-fluid">
                                                 
                                             </li>
                                         </ul>

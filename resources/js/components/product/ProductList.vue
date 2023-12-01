@@ -6,11 +6,12 @@
                 <ul class="list-inline">
                     <li class="list-inline-item" v-for="filter in selectedFiltersName">
                         <span class="badge bg-info text-dark">{{ filter.name ? filter.name : filter.description }}</span>
-                        <button class="btn-close" aria-label="Close" @click="removingFilter('brand', filter)" v-show="filter.id > 0"></button>
-                        <button class="btn-close" aria-label="Close" @click="removingFilter('version', filter)" v-show="filter.model_id > 0"></button>
-                        <button class="btn-close" aria-label="Close" @click="removingFilter('model', filter)" v-show="filter.brand_id > 0"></button>
+                        <button class="btn-close" aria-label="Close" @click="removingFilter('brand', filter)" v-show="filter.brandId != null"></button>
+                        <button class="btn-close" aria-label="Close" @click="removingFilter('version', filter)" v-show="filter.versionId != null > 0"></button>
+                        <button class="btn-close" aria-label="Close" @click="removingFilter('model', filter)" v-show="filter.modelId != null"></button>
                         <button class="btn-close" aria-label="Close" @click="removingFilter('km', filter)" v-show="filter.km_id  >= 0"></button>
                         <button class="btn-close" aria-label="Close" @click="removingFilter('price', filter)" v-show="filter.price_id  >= 0"></button>
+                        <button class="btn-close" aria-label="Close" @click="removingFilter('year', filter)" v-show="filter.yearIndex  > 0"></button>
                     </li>
                 </ul>
                 <ul class="list-group">
@@ -299,26 +300,36 @@ export default {
         },
         filterPostsByBrand: function (brand){
             this.filters[0]['brand_id'].push(brand.id)
+            brand.brandId = brand.id;
             this.selectedFiltersName.push(brand);
-            console.info("Haciendo el filtro con brand_id: "+brand.id);
             this.sendingFilterRequest();
         },
         filterPostsByVersion: function (version){
             this.filters[0]['version_id'].push(version.id);
+            version.versionId = version.id;
             this.selectedFiltersName.push(version);
-            console.info("Haciendo el filtro con version_id: "+version.id);
             this.sendingFilterRequest();
         },
         filterPostsByModel: function (model){
             this.filters[0]['model_id'].push(model.id);
-            console.info("Haciendo el filtro con model_id: "+model.id);
+            model.modelId = model.id;
             this.selectedFiltersName.push(model);
             this.sendingFilterRequest();
         },   
         filterPostsByYear: function (year){
             this.filters[0]['year'] = year;
             console.info("Haciendo el filtro con year: "+year);
-            this.selectedFiltersName.push(year);
+            let description = year;
+            let yearObject = { yearIndex:year, description};
+            
+            for (let i = 0; i < this.selectedFiltersName.length; i++) {
+                if ('year' in this.selectedFiltersName[i]) {
+                    this.selectedFiltersName.splice(i,1);
+                }                
+            }
+
+            this.selectedFiltersName.push(yearObject);
+            // this.selectedFiltersName.push(year);
             this.sendingFilterRequest();
         },      
         searchPosts: function (keyWord){
@@ -334,6 +345,7 @@ export default {
             }
         },
         sendingFilterRequest: function(){
+            console.log("objeto que se envio para filtrado>>>>", this.filters);
             axios({
                 url: 'api/product/filter',
                 method: 'POST',
@@ -343,6 +355,8 @@ export default {
             }).then( (response) => {
                 this.products = [];
                 this.products = response.data;
+                this.sortedProducts = [];
+                this.sortedProducts = response.data;
             }).catch(e=>console.error(e));
         },
         sendSearchRequest: function(){
@@ -355,31 +369,31 @@ export default {
                 }
             }).then( (response) => {
                 this.products = [];
-                // elimina vendidos
-                response.data.forEach(element => {
-                    if (element.sold) {
-                        response.data.pop();
-                    }
-                });
                 this.products = response.data;
             }).catch( err => console.error(err));
         },
         removingFilter: function(type, filter){
             console.info("Tipo de filtro a borrar: "+type);
-            console.info("Indice del elemento: "+this.selectedFiltersName.indexOf(filter));
+            console.info("Filtro a borrar: ",filter);
             switch (type){
                 case 'brand':
-                    this.filters[0]['brand_id'].splice(this.selectedFiltersName.indexOf(filter), 1);
-                    this.selectedFiltersName.splice(this.selectedFiltersName.indexOf(filter), 1)
+                    // this.filters[0]['brand_id'].splice(this.filters[0]['brand_id'].indexOf(filter.id), 1);
+                    this.removeFromArray('brand_id', filter.id);
+                    this.selectedFiltersName.splice(this.selectedFiltersName.indexOf(filter.id), 1)
                     this.sendingFilterRequest();
                     break;
                 case 'version':
-                    this.filters[0]['version_id'].splice(this.selectedFiltersName.indexOf(filter), 1);
-                    this.selectedFiltersName.splice(this.selectedFiltersName.indexOf(filter), 1)
+                    this.removeFromArray('version_id', filter.id);
+                    this.selectedFiltersName.splice(this.selectedFiltersName.indexOf(filter.id), 1)
                     this.sendingFilterRequest();
                     break;
-                case 'model':
-                    this.filters[0]['model_id'].splice(this.selectedFiltersName.indexOf(filter), 1);
+                case 'model':                        
+                    this.removeFromArray('model_id', filter.id);
+                    this.selectedFiltersName.splice(this.selectedFiltersName.indexOf(filter.id), 1)
+                    this.sendingFilterRequest();
+                    break;
+                case 'year':
+                    this.filters[0]['year']=0;
                     this.selectedFiltersName.splice(this.selectedFiltersName.indexOf(filter), 1)
                     this.sendingFilterRequest();
                     break;
@@ -396,6 +410,16 @@ export default {
                     this.sendingFilterRequest();
                     break;
             }
+        },
+        removeFromArray: function (campo, valor) {
+            if (this.filters[0].hasOwnProperty(campo) && Array.isArray(this.filters[0][campo])) {
+                const index = this.filters[0][campo].indexOf(valor);
+                //console.log("index; "+ index);
+                if (index !== -1) {
+                    this.filters[0][campo].splice(index, 1);
+                }
+            }
+            // console.log("this.filters[0]auria sin elemento-------->>>>>", this.filters[0]);
         }
     }
 }
